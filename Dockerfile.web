@@ -1,0 +1,42 @@
+#FROM rust:latest as builder
+FROM ekidd/rust-musl-builder as builder
+
+#WORKDIR /usr/src/rust-rest
+WORKDIR /home/rust/src
+COPY --chown=rust ./Cargo* ./
+COPY --chown=rust ./src ./src/
+
+RUN cargo build --release
+#RUN rm -r ./target/x86_64-unknown-linux-musl/release/.fingerprint/yagcdn*
+#RUN rm -r ./target/x86_64-unknown-linux-musl/release/.fingerprint/time-cache-*
+
+#CMD ["rest"]
+
+
+#FROM alpine
+#RUN apk update
+#RUN apk add sqlite
+
+#FROM debian:buster
+
+
+FROM alpine:3.9.4 AS app
+# Set working directory
+# Copy in statically linked binary from builder stage
+#COPY --from=builder /usr/src/rust-rest/target/x86_64-unknown-linux-musl/release/rest /usr/local/bin
+COPY --from=builder /home/rust/src/target/x86_64-unknown-linux-musl/release/rest /
+# Expose port for server
+EXPOSE 8088
+# Run entrypoint script
+#CMD rest
+ENTRYPOINT ["/rest"]
+
+
+# works
+#FROM debian:stable-slim
+#RUN apt-get -o Acquire::Check-Valid-Until=false -o Acquire::Check-Date=false update
+#RUN apt-get update
+#RUN apt-get install -y sqlite3
+
+#COPY --from=builder /usr/src/rust-rest/target/release/rest /usr/local/bin/qrrest
+#CMD ["qrrest"]
