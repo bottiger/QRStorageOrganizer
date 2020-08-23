@@ -21,18 +21,39 @@ path = "src/bin/rest.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-diesel =         { version = "*", default-features = false, features = ["sqlite", "chrono"] }
-# Needed for sqlite.
-libsqlite3-sys = { version = "*", features = ["bundled"] }
-
+lazy_static = "1.4.0"
 dotenv = "0.15"
 rand  = "0.7"
 chrono = "0.4"
 clap = "2.33"
-qrcode = "0.11"
-image = "0.22"
-bardecoder = "0.2"
+
+qrcode = "0.12"
+image = "0.23"
+#bardecoder = "0.2"
+fxhash = "0.2.1"
+
 actix-web = "2.0"
 actix-rt = "1.0.0"
-rusoto_core = "0.42"
-rusoto_dynamodb = "0.42"
+env_logger = "0.7.1"
+
+simple-error = "0.2.2"
+
+rusoto_dynamodb = "0.44"
+rusoto_core = "0.44"
+rusoto_s3 = "0.44.0"
+rusoto_credential = "0.44"
+
+dynomite = "0.9.0"
+dynomite-derive = "0.9.0"
+futures = "0.3"
+tokio = "0.2.22"
+log = "0.4"
+uuid = { version = "0.8", features = ["serde", "v5"] }
+
+rust-s3 = "0.22.12"
+
+base64 = "0.12"
+harsh = "0.1.6"
+
+sha3 = "0.8.2"
+bytes = "0.4.12"

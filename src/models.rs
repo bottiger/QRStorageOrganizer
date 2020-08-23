@@ -1,3 +1,4 @@
+/*
 use chrono::NaiveDateTime;
 
 #[cfg(test)]
@@ -92,3 +93,4 @@ fn update(qrcode: QrEntry) -> Result<usize, diesel::result::Error> {
     //qrcode.save_changes(&connection);
     diesel::update(&qrcode).set(&qrcode).execute(&connection)
 }
+*/

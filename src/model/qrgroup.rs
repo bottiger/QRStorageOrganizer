@@ -1,0 +1,111 @@
+use crate::model::schema::u256DB;
+use crate::model::schema::DbItem;
+use crate::dynamodb::qruuid::slice_to_u256;
+use crate::model::schema::DynamoPrimaryKey;
+use crate::model::schema::DynamoDbType;
+use std::collections::HashMap;
+use crate::model::schema::DynamoPartitionKeyDB;
+use rusoto_dynamodb::AttributeValue;
+use crate::model::schema::DynamoPartitionKey;
+use crate::model::schema::DynamoSearchKey;
+use crate::model::schema::u256;
+use crate::model::qrcode::QrCode;
+use crate::dynamodb::qruuid::vec_to_u256;
+use dynomite::Item;
+use dynomite::Attribute;
+
+
+#[derive(Default, Debug, Clone)]
+pub struct QrGroup {
+    pub group_id: DynamoPartitionKey,
+    pub id: DynamoSearchKey,
+    pub qr_salt: u256,
+    pub qr_count: u32,
+    pub qrcodes: Vec<QrCode>,
+}
+
+impl From<QrGroupDB> for QrGroup {
+    fn from(item: QrGroupDB) -> Self {
+        let qrgroup = QrGroup {
+            group_id: vec_to_u256(&item.group_id).ok().unwrap(),
+            id: item.id,
+            qr_salt: vec_to_u256(&item.qr_salt).ok().unwrap(),
+            qr_count: item.qr_count,
+            qrcodes: Vec::new(),
+        };
+
+        qrgroup
+    }
+}
+
+#[derive(Item, Default, PartialEq, Debug, Clone)]
+pub struct QrGroupDB {
+    #[dynomite(partition_key)]
+    #[dynomite(rename = "qr_group_id")] //remote name
+    pub group_id: DynamoPartitionKeyDB,
+    #[dynomite(sort_key)]
+    #[dynomite(rename = "qr_val")] //remote name
+    pub id: DynamoSearchKey,
+    pub qr_salt: u256DB,
+    pub qr_count: u32,
+}
+
+impl From<QrGroup> for QrGroupDB {
+    fn from(item: QrGroup) -> Self {
+        let qrgroupdb = QrGroupDB {
+            group_id: slice_to_u256(&item.group_id).ok().unwrap().to_vec(),
+            id: item.id,
+            qr_salt: slice_to_u256(&item.qr_salt).ok().unwrap().to_vec(),
+            qr_count: item.qr_count,
+        };
+
+        qrgroupdb
+    }
+}
+
+impl DbItem for QrGroupDB {
+    fn get_primary_key(&self) -> DynamoPrimaryKey {
+        DynamoPrimaryKey{
+            partition_key: self.get_partition_key(),
+            sort_key: self.get_sort_key(),
+        }
+    }
+    fn get_partition_key(&self) -> DynamoPartitionKey {
+        vec_to_u256(&self.group_id).ok().unwrap() //self.group_id
+    }
+    fn get_sort_key(&self) -> DynamoSearchKey {
+        self.id.to_owned()
+    }
+
+    fn get_type(&self) -> DynamoDbType {
+        DynamoDbType::QrGroup
+    }
+
+    fn get_attribute_value_map(&self) -> HashMap<String, AttributeValue> {
+        let clone = self.clone();
+        let mut map: HashMap<String, AttributeValue> = clone.into();
+        map.remove("qrcodes");
+
+        map
+    }
+
+    fn get_update_expr(&self) -> (Option<HashMap<String, AttributeValue>>, Option<String>) {
+        let mut expression_attribute_values = HashMap::new();
+        expression_attribute_values.insert(
+                ":count".to_string(),
+                self.qr_count.to_owned().into_attr()
+            );
+        /*
+        expression_attribute_values.insert(
+                ":codes".to_string(),
+                self.qrcodes.to_owned().into_attr()
+            );
+            */
+
+        let attr_vals = Some(expression_attribute_values);
+        //let update_expr = Some("SET qr_count = :count, qrcodes = :codes".to_string());
+        let update_expr = Some("SET qr_count = :count".to_string());
+
+        (attr_vals, update_expr)
+    }
+}
