@@ -1,3 +1,6 @@
+use crate::storage::delete;
+use rusoto_s3::DeleteObjectOutput;
+use rusoto_s3::DeleteObjectError;
 use std::error;
 use crate::model::qrimage::QrImageHash;
 use crate::model::schema::DynamoPrimaryKey;
@@ -14,14 +17,21 @@ use bytes::BytesMut;
 static SEPARATOR: &str = "-";
 
 pub async fn put_image(primary_key: DynamoPrimaryKey, image: QrImage) -> Result<PutObjectOutput, RusotoError<PutObjectError>> {
-	
 	let key = get_key(&primary_key, &image.hash32);
+	log::trace!("insert image: {:?} => {:?}", base64::encode(&primary_key.partition_key), key);
 
 
  	let bytes = image.image.into_vec();
 	let body = Some(bytes.into());
 
 	put(key, body).await
+}
+
+pub async fn delete_image(primary_key: DynamoPrimaryKey, image: QrImage) -> Result<DeleteObjectOutput, RusotoError<DeleteObjectError>> {
+	
+	let key = get_key(&primary_key, &image.hash32);
+
+	delete(key).await
 }
 
 pub async fn get_image(primary_key: &DynamoPrimaryKey, hash32: &QrImageHash) -> Result<QrImage, Box<dyn error::Error>> { //RusotoError<GetObjectError>

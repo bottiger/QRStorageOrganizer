@@ -5,11 +5,14 @@ extern crate qrcode;
 extern crate env_logger;
 #[macro_use]
 extern crate simple_error;
-
-use log::Level;
-
+extern crate config;
+use qrstore::config::init_env;
+use std::error::Error;
+#[macro_use]
+extern crate lazy_static;
+use qrstore::config::get_config;
 use qrstore::fixtures::get_fixture;
-use qrstore::fixtures::get_fixture_code;
+
 
 //use qrstore::dynamodb::insert_group;
 use qrstore::dynamodb::crud::query;
@@ -17,10 +20,10 @@ use qrstore::dynamodb::insert_group;
 use qrstore::dynamodb::get_group;
 use clap::{Arg, App, SubCommand};
 
-use futures::executor::block_on;
 //use qrcode::im_encoder;
 
 use qrstore::storage::get_bucket;
+use std::collections::HashMap;
 
 
 //use rusoto_credential::{EnvironmentProvider, ProvideAwsCredentials};
@@ -54,8 +57,7 @@ async fn main2() {
     env_logger::init();
     log::debug!("[foo] debug");
 
-    env::set_var("AWS_ACCESS_KEY_ID", "AKIA3MNCVP2PGTEJOUSX");
-    env::set_var("AWS_SECRET_ACCESS_KEY", "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");
+    init_env();
 
     // wasabi
     //env::set_var("AWS_ACCESS_KEY_ID", "9RB1ETUGDVPR8TM87MQA");
@@ -105,13 +107,14 @@ async fn main2() {
 
     //get_bucket().await;
 
-}  
+}
+
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), Box<dyn Error>> {
 
-    env::set_var("AWS_ACCESS_KEY_ID", "AKIA3MNCVP2PGTEJOUSX");
-    env::set_var("AWS_SECRET_ACCESS_KEY", "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");
+    //env::set_var("AWS_ACCESS_KEY_ID", "AKIA3MNCVP2PGTEJOUSX");
+    //env::set_var("AWS_SECRET_ACCESS_KEY", "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");
 
     let fixture = get_fixture();
     println!("Fixture: {:?}", fixture);
@@ -119,6 +122,11 @@ async fn main() {
 
     println!("put 02");
 
+    env::set_var("AWS_ACCESS_KEY_ID", get_config().get::<String>(&"db_key").unwrap());
+    env::set_var("AWS_SECRET_ACCESS_KEY", get_config().get::<String>(&"db_secret").unwrap());
+
+    let fixture = get_fixture();
+    println!("Fixture: {:?}", fixture);
 
     let _reginsert = match fixture {
         Ok(mut f) => {
@@ -157,7 +165,7 @@ async fn main() {
             };
             
 
-            let group = block_on(get_group(&f.group_id));
+            let group = get_group(&f.group_id).await;
             println!("get_group: {:#?}", group);
 
             /*
@@ -284,6 +292,8 @@ async fn main() {
         println!("Read res: {}", read_im);
     }
     */
+
+    Ok(())
 }
 
 #[allow(dead_code)]

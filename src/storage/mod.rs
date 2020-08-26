@@ -1,5 +1,9 @@
 
 
+use rusoto_s3::ListObjectsV2Output;
+use rusoto_s3::ListObjectsV2Error;
+use rusoto_s3::ListObjectsV2Request;
+use crate::config::get_config;
 use rusoto_s3::GetObjectRequest;
 use rusoto_s3::DeleteObjectRequest;
 use rusoto_core::RusotoError;
@@ -17,24 +21,18 @@ use rusoto_credential::StaticProvider;
 
 pub mod image_store;
 
-
-/*
-fn get_endpoint() -> Region {
-	Region::Custom {
-        name: "eu-north-1".to_owned(),
-        endpoint: "https://s3.eu-north-1.amazonaws.com".to_owned(),
-    }
-}
-*/
-
 fn get_credential_provider() -> StaticProvider {
-	StaticProvider::new_minimal(String::from("9RB1ETUGDVPR8TM87MQA"), String::from("jsCvqZtEsUhm3s8CeDhSkdLpoKT2eAm2A4SeHhPz"))
+    let db_key    = get_config().get::<String>(&"storage_key").unwrap();
+    let db_secret = get_config().get::<String>(&"storage_secret").unwrap();
+	StaticProvider::new_minimal(db_key, db_secret)
 }
 
 fn get_endpoint() -> Region {
+    let storage_region    = get_config().get::<String>(&"storage_region").unwrap();
+    let storage_endpoint  = get_config().get::<String>(&"storage_endpoint").unwrap();
 	Region::Custom {
-        name: "eu-central-1".to_owned(),
-        endpoint: "https://s3.eu-central-1.wasabisys.com".to_owned(),
+        name: storage_region,
+        endpoint: storage_endpoint,
     }
 }
 
@@ -51,7 +49,8 @@ fn example(s: String) -> StreamingBody {
 }
 
 pub async fn put(obj_key: String, obj_body: Option<StreamingBody>) -> Result<PutObjectOutput, RusotoError<PutObjectError>> {
-	let client = get_client();
+	log::info!("put obj: {:?}", obj_key);
+    let client = get_client();
 
 	let req = PutObjectRequest {
         bucket: get_bucket_name(),
@@ -62,21 +61,6 @@ pub async fn put(obj_key: String, obj_body: Option<StreamingBody>) -> Result<Put
 	
 	client.put_object(req).await
 }
-
-/*
-pub async fn put(obj_key: String, obj_body: String) -> Result<PutObjectOutput, RusotoError<PutObjectError>> {
-	let client = get_client();
-
-	let req = PutObjectRequest {
-        bucket: get_bucket_name(),
-        key: obj_key,
-        body: Some(example(obj_body)),
-        ..Default::default()
-    };
-	
-	client.put_object(req).await
-}
-*/
 
 pub async fn get(obj_key: String) -> Result<GetObjectOutput, RusotoError<GetObjectError>> {
 	let client = get_client();
@@ -120,4 +104,32 @@ pub async fn get_bucket() -> Result<(), ()> {
 	Ok(())
 
 
+}
+
+pub async fn list_objects(obj_prefix: String) -> Result<ListObjectsV2Output, RusotoError<ListObjectsV2Error>> {
+    log::info!("count objects with prefix: {:?}", obj_prefix);
+
+    let client = get_client();
+
+    let req = ListObjectsV2Request {
+        bucket: get_bucket_name(),
+        prefix: Some(obj_prefix),
+        ..Default::default()
+    };
+    
+    let res = client.list_objects_v2(req).await;
+
+    res
+}
+
+pub async fn count_objects(obj_prefix: String) -> Result<i64, RusotoError<ListObjectsV2Error>> {
+
+    let objs = list_objects(obj_prefix).await?;
+
+    let count = match objs.key_count {
+        Some(v) => v,
+        None    => 0,
+    };
+
+    Ok(count)
 }

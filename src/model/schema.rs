@@ -33,7 +33,7 @@ pub struct DynamoPrimaryKey {
 pub fn slice_to_partition_key(s: &[u8]) -> Result<DynamoPartitionKey, AttributeError> {
     match s.try_into() {
         Ok(v) => Ok(v),
-        Err(E) => Err(AttributeError::InvalidFormat),
+        Err(_e) => Err(AttributeError::InvalidFormat),
     }
 }
 

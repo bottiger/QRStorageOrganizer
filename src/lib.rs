@@ -10,6 +10,7 @@ pub mod dynamodb;
 //pub mod types;
 pub mod fixtures;
 pub mod storage;
+pub mod config;
 
 #[no_mangle]
 pub extern fn rust_fn(x: i32) -> i32 {

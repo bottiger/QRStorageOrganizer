@@ -6,10 +6,16 @@ pub mod crud;
 pub mod qruuid;
 
 
+use rusoto_s3::DeleteObjectOutput;
+use rusoto_s3::DeleteObjectError;
+use crate::storage::image_store::delete_image;
+
+use std::error;
+use futures::future::join_all;
 use dynomite::{
     dynamodb::{
         PutItemOutput, PutItemError,
-        QueryOutput, QueryError,
+        QueryOutput,
     }, FromAttributes
 };
 
@@ -26,130 +32,56 @@ use crate::model::schema::DynamoPartitionKey;
 
 use crate::storage::image_store::put_image;
 
+/*
 #[derive(Debug)]
 enum QueryResult {
     QrGroup(QrGroupDB),
     QrCode(QrCodeDB),
 }
-
-/*
-pub fn insert_sync(qr_entry: &dyn DbItem) -> Result<PutItemOutput, RusotoError<PutItemError>> {
-    //let _res = _insert(qr_entry, Rc::new(DynamoDbClient::new(Region::default())));
-    let client = DynamoDbClient::new(Region::EuNorth1);
-
-    let item_attr = qr_entry.get_attribute_value_map();
-
-    let put_item_request = PutItemInput {
-        table_name: (*TABLE_NAME).to_string(),
-        item: item_attr,
-        ..PutItemInput::default()
-    };
-
-    println!("put req: {:?}", put_item_request);
-    println!("put 1");
-
-    //let res = block_on(client.put_item(put_item_request));
-    let res = client.put_item(put_item_request).Unpin().Unbox().wait();
-
-    println!("put 123 {:?}", res);
-
-   //_res.await
-
-   res
-}
 */
 
+pub async fn get_group(pk: &DynamoPartitionKey) -> Result<QrGroup, Box<dyn error::Error>> {
 
-pub async fn get_group(pk: &DynamoPartitionKey) -> Option<QrGroup> {//RusotoFuture<QueryOutput, QueryError> { //impl Future<Output = Qrgroup> {
+    let res: QueryOutput = query(pk, None).await?;
 
-    //let res:  Pin<Box<dyn Future<Output=Result<QueryOutput, RusotoError<QueryError>>>>> = query(pk, None);
-    let res:  Result<QueryOutput, RusotoError<QueryError>> = query(pk, None).await;
+    let it = res.items.unwrap();
+    let mut group: QrGroup = Default::default();
+    let mut codes: Vec<QrCode> = Vec::new();
 
-    let out = match res {
-        Ok(v) => {
-            //println!("Group get: {:#?}", v);
+    for item in it.iter() {
 
-            let it = v.items.unwrap();
-            let mut group: QrGroup = Default::default();
-            let mut codes: Vec<QrCode> = Vec::new();
-
-            for item in it.iter() {
-                //println!("start");
-                //println!("item: {:#?}", item);
-
-                match QrGroupDB::from_attrs(item.clone()) {
-                    Ok(T) => {
-                        group = QrGroup::from(T);
+        
+        match QrGroupDB::from_attrs(item.clone()) {
+            Ok(t) => {
+                group = QrGroup::from(t);
+            },
+            Err(_e) => {
+                match QrCodeDB::from_attrs(item.clone()) {
+                    Ok(t) => {
+                        codes.push(QrCode::from(t));
                     },
-                    Err(E) => {
-                        match QrCodeDB::from_attrs(item.clone()) {
-                            Ok(T) => {
-                                codes.push(QrCode::from(T));
-                            },
-                            Err(E) => {
-                                println!("Error: {}", E);
-                            }
-                        }
+                    Err(e) => {
+                        println!("Error: {}", e);
                     }
                 }
-
-
-                group.qrcodes = codes.clone();
-
-                //println!("stream_scan() item {:#?}", group);
-                //println!("end");
             }
+        }
+        
+        group.qrcodes = codes.clone();
+    }
 
-            Some(group)
-
-        },
-        Err(e) => {
-            panic!("Error completing futures: {}", e);
-            None
-        },
-    };
-
-    out
+    Ok(group)
 }
 
-
 pub async fn insert_group(item: &QrGroup) -> Result<PutItemOutput, RusotoError<PutItemError>> {
-    //let mut puts = Vec::new();
+    log::debug!("insert group: {:?} => {:?}", item.group_id, base64::encode(item.group_id));
 
     
     let qr_group_db: QrGroupDB = QrGroupDB::from(item.clone());
-
-    /*
-    println!("put 03");
-
-    let r = insert_sync(&qr_group_db);
-
-
-    println!("put 02");
-    r
-    */
-
-    
     let group_put: Result<PutItemOutput, RusotoError<PutItemError>> = insert(&qr_group_db).await;
-    //puts.push(group_put);
 
-    println!("put 12");
-
-    
-    //let qr_codes: Vec<QrCodeDB> = item.qrcodes.clone().into_iter().map(QrCodeDB::from).collect();
-    let qr_codes: Vec<QrCode> = item.qrcodes.clone();
-
-    for qrcode in qr_codes {
-        //let qr_res: Result<PutItemOutput, RusotoError<PutItemError>> = insert(&qrcode).await;
-        //qr_res.await;
-        println!("put 11");
-        insert_qrcode(&qrcode).await;
-
-        //group_put.then(|_| qr_res)
-        //puts.push(qr_res);
-    }
-
-    //let result = try_join_all(puts);
+    let futures = item.qrcodes.clone().into_iter().map(|q| insert_qrcode(q) );
+    join_all(futures).await;
     
 
     let result = group_put;
@@ -158,16 +90,35 @@ pub async fn insert_group(item: &QrGroup) -> Result<PutItemOutput, RusotoError<P
     
 }
 
-pub async fn insert_qrcode(item: &QrCode) -> Result<PutItemOutput, RusotoError<PutItemError>> {
+pub async fn insert_qrcode(item: QrCode) -> Result<PutItemOutput, RusotoError<PutItemError>> {
+    log::warn!("insert qrcode: {:?} => {:?}", item.title, base64::encode(item.group_id));
+
+
     let qrdb = QrCodeDB::from(item.clone());
-    let mut res = insert(&qrdb).await;
+    let res = insert(&qrdb).await?;
 
+    let futures = item.images.into_iter().map({ |i| 
+        put_image(qrdb.get_primary_key(), i)
+    });
     
-    for image in item.images.clone() {
-        put_image(qrdb.get_primary_key(), image).await;
+    for nres in join_all(futures).await.into_iter() {
+        match nres {
+            Ok(r) => log::debug!("Succesfully inserted image: {:?}", r),
+            Err(e) => log::warn!("Failed to insert image: {:?}", e),
+        } 
     }
-    
 
+    Ok(res)
+}
+
+pub async fn delete_images(code: &mut QrCode) -> Vec<Result<DeleteObjectOutput, RusotoError<DeleteObjectError>>> {
+    log::debug!("removing {} images from: {:?}", code.images.len(), code.title);
+
+    let qrdb = QrCodeDB::from(code.clone());
+    let futures = code.images.clone().into_iter().map(|i| delete_image(qrdb.get_primary_key(), i));
+    let res = join_all(futures).await;
+
+    code.images.clear();
 
     res
 }
