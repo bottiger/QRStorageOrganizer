@@ -18,9 +18,7 @@ fn get_fixture_image() -> Result<DynamicImage, ImageError> {
     img_source_dir.push("tux");
     img_source_dir.set_extension("jpg");
 
-    let img = image::open(img_source_dir);
-
-    img
+    image::open(img_source_dir)
 }
 
 fn get_fixture_image2() -> Result<DynamicImage, ImageError> {
@@ -29,9 +27,7 @@ fn get_fixture_image2() -> Result<DynamicImage, ImageError> {
     img_source_dir.push("tux-org");
     img_source_dir.set_extension("png");
 
-    let img = image::open(img_source_dir);
-
-    img
+    image::open(img_source_dir)
 }
 
 fn get_fixture_image_rgb() -> QrImage {

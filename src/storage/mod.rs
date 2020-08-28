@@ -120,9 +120,7 @@ pub async fn list_objects(
         ..Default::default()
     };
 
-    let res = client.list_objects_v2(req).await;
-
-    res
+    client.list_objects_v2(req).await
 }
 
 pub async fn count_objects(obj_prefix: String) -> Result<i64, RusotoError<ListObjectsV2Error>> {

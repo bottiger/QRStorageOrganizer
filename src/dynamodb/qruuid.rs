@@ -20,13 +20,16 @@ use std::convert::TryInto;
 /// The next 64 bits are for the QR code
 
 pub fn to_base64(bytes: Bytes) -> String {
-    let encoded = encode(bytes);
-
-    encoded
+    encode(bytes)
 }
 
+/*
 pub fn vec_to_u256(v: &Vec<u8>) -> Result<u256, DecodeError> {
     slice_to_u256(v.as_slice())
+}
+*/
+pub fn vec_to_u256(v: &[u8]) -> Result<u256, DecodeError> {
+    slice_to_u256(v)
 }
 
 pub fn slice_to_u256(s: &[u8]) -> Result<u256, DecodeError> {
@@ -65,9 +68,7 @@ pub fn gen_qr_id(group: &QrGroup, val: DynamoSearchKey) -> harsh::Result<String>
 
 pub fn gen_qr_scan_val(code: &QrCode) -> String {
     let prefix = "https://qrst.dk/".to_owned();
-    let url = prefix + &base64::encode(code.group_id).to_owned() + "-" + &code.id.to_string();
-
-    url
+    prefix + &base64::encode(code.group_id) + "-" + &code.id.to_string()
 }
 
 pub fn gen_qr_scan_val_short(_group: &QrGroup, val: DynamoSearchKey) -> String {

@@ -68,11 +68,7 @@ pub async fn insert(item: &dyn DbItem) -> Result<PutItemOutput, RusotoError<PutI
 
     println!("put 2");
 
-    //res.await2
-    let res = res2;
-    //});
-
-    res
+    res2
 }
 
 pub async fn update(

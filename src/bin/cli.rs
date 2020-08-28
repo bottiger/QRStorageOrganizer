@@ -58,7 +58,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
 }
 
 fn parse_args(_args: Vec<String>) -> clap::ArgMatches<'static> {
-    let matches = App::new("QR code storage ")
+    App::new("QR code storage ")
         .version("0.1")
         .author("Arvid Böttiger <bottiger@gmail.com>")
         .about("Does awesome things")
@@ -93,7 +93,5 @@ fn parse_args(_args: Vec<String>) -> clap::ArgMatches<'static> {
                         .help("print debug information verbosely"),
                 ),
         )
-        .get_matches();
-
-    matches
+        .get_matches()
 }

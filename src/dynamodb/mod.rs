@@ -75,12 +75,10 @@ pub async fn insert_group(item: &QrGroup) -> Result<PutItemOutput, RusotoError<P
     let qr_group_db: QrGroupDB = QrGroupDB::from(item.clone());
     let group_put: Result<PutItemOutput, RusotoError<PutItemError>> = insert(&qr_group_db).await;
 
-    let futures = item.qrcodes.clone().into_iter().map(|q| insert_qrcode(q));
+    let futures = item.qrcodes.clone().into_iter().map(insert_qrcode);
     join_all(futures).await;
 
-    let result = group_put;
-
-    result
+    group_put
 }
 
 pub async fn insert_qrcode(item: QrCode) -> Result<PutItemOutput, RusotoError<PutItemError>> {

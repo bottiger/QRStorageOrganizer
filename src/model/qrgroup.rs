@@ -25,15 +25,13 @@ pub struct QrGroup {
 
 impl From<QrGroupDB> for QrGroup {
     fn from(item: QrGroupDB) -> Self {
-        let qrgroup = QrGroup {
+        QrGroup {
             group_id: vec_to_u256(&item.group_id).ok().unwrap(),
             id: item.id,
             qr_salt: vec_to_u256(&item.qr_salt).ok().unwrap(),
             qr_count: item.qr_count,
             qrcodes: Vec::new(),
-        };
-
-        qrgroup
+        }
     }
 }
 
@@ -51,14 +49,12 @@ pub struct QrGroupDB {
 
 impl From<QrGroup> for QrGroupDB {
     fn from(item: QrGroup) -> Self {
-        let qrgroupdb = QrGroupDB {
+        QrGroupDB {
             group_id: slice_to_u256(&item.group_id).ok().unwrap().to_vec(),
             id: item.id,
             qr_salt: slice_to_u256(&item.qr_salt).ok().unwrap().to_vec(),
             qr_count: item.qr_count,
-        };
-
-        qrgroupdb
+        }
     }
 }
 

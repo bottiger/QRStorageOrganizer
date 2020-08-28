@@ -63,11 +63,9 @@ pub async fn get_image(
 }
 
 fn get_key(primary_key: &DynamoPrimaryKey, hash32: &QrImageHash) -> String {
-    let key = base64::encode(&primary_key.partition_key)
+    base64::encode(&primary_key.partition_key)
         + SEPARATOR
         + &primary_key.sort_key.to_string()
         + SEPARATOR
-        + &hash32.to_string();
-
-    key
+        + &hash32.to_string()
 }

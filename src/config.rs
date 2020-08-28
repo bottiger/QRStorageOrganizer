@@ -16,7 +16,7 @@ pub fn get_config() -> Config {
     SETTINGS.clone()
 }
 
-pub fn init_env() -> () {
+pub fn init_env() {
     env::set_var(
         "AWS_ACCESS_KEY_ID",
         get_config().get::<String>(&"db_key").unwrap(),

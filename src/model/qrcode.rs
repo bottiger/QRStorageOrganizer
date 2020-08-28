@@ -26,16 +26,14 @@ pub struct QrCode {
 
 impl From<QrCodeDB> for QrCode {
     fn from(item: QrCodeDB) -> Self {
-        let qr_code = QrCode {
+        QrCode {
             group_id: vec_to_u256(&item.group_id).ok().unwrap(),
             id: item.id,
             title: item.title,
             location: item.location,
             items: item.items,
             images: Vec::new(),
-        };
-
-        qr_code
+        }
     }
 }
 
@@ -56,16 +54,14 @@ pub struct QrCodeDB {
 
 impl From<QrCode> for QrCodeDB {
     fn from(item: QrCode) -> Self {
-        let qr_code_db = QrCodeDB {
+        QrCodeDB {
             group_id: slice_to_u256(&item.group_id).ok().unwrap().to_vec(),
             id: item.id,
             title: item.title,
             location: item.location,
             items: item.items,
             image_hashes: item.images.into_iter().map(|i| i.hash32).collect(),
-        };
-
-        qr_code_db
+        }
     }
 }
 

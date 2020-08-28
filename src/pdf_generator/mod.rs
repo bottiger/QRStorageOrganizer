@@ -14,7 +14,5 @@ pub fn make_pdf(_qrcodes: Vec<QrCode>) -> PdfDocumentReference {
 }
 
 pub fn save_pdf(doc: PdfDocumentReference, file: File) -> Result<(), Error> {
-    let res = doc.save(&mut BufWriter::new(file));
-
-    res
+    doc.save(&mut BufWriter::new(file))
 }
