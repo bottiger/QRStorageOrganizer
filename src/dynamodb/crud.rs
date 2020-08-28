@@ -1,30 +1,18 @@
-//extern crate rusoto_dynamodb;
 extern crate futures;
 
-use rusoto_dynamodb::CreateTableInput;
-use rusoto_dynamodb::KeySchemaElement;
-use rusoto_dynamodb::AttributeDefinition;
-use rusoto_dynamodb::ProvisionedThroughput;
+use dynomite::{
+    dynamodb::{
+        AttributeValue, DeleteItemError, DeleteItemInput, DeleteItemOutput, DynamoDb,
+        DynamoDbClient, GetItemError, GetItemInput, GetItemOutput, PutItemError, PutItemInput,
+        PutItemOutput, QueryError, QueryInput, QueryOutput, UpdateItemError, UpdateItemInput,
+        UpdateItemOutput,
+    },
+    Attribute, Retries,
+};
 use rusoto_dynamodb::ListTablesInput;
 
-use dynomite::{
-    attr_map, 
-    dynamodb::{
-        DynamoDb, DynamoDbClient, AttributeValue,
-        PutItemInput, PutItemOutput, PutItemError,
-        GetItemInput, GetItemOutput, GetItemError,
-        UpdateItemInput, UpdateItemOutput, UpdateItemError,
-        DeleteItemInput, DeleteItemOutput, DeleteItemError,
-        QueryInput, QueryOutput, QueryError,
-    }, 
-    Attribute, Attributes, DynamoDbExt, Retries
-};
+use dynomite::retry::Policy;
 
-use dynomite::{
-    retry::Policy,
-    FromAttributes, Item, 
-};
-use futures::{TryStreamExt};
 #[cfg(feature = "default")]
 use rusoto_core_default::Region;
 #[cfg(feature = "rustls")]
@@ -34,101 +22,95 @@ use rusoto_core::region::Region;
 use rusoto_core::RusotoError;
 //use rusoto_core::RusotoFuture;
 
-use std::rc::Rc;
 use std::collections::HashMap;
+use std::rc::Rc;
 
-
-use crate::model::schema::DynamoPrimaryKey;
-use crate::model::schema::DynamoPartitionKey;
-use crate::model::schema::DynamoSearchKey;
 use crate::model::schema::DbItem;
-
-
+use crate::model::schema::DynamoPartitionKey;
+use crate::model::schema::DynamoPrimaryKey;
+use crate::model::schema::DynamoSearchKey;
 
 use crate::model::schema::*;
 
 // work in 0.41
 thread_local!(static DB: Rc<DynamoDbClient> = Rc::new(DynamoDbClient::new(Region::EuNorth1)));
 
-
 pub async fn get(item: &DynamoPrimaryKey) -> Result<GetItemOutput, RusotoError<GetItemError>> {
-   let res = DB.with(|odb_cell| {
-      _get(item, Rc::clone(odb_cell))
-  });
+    let res = DB.with(|odb_cell| _get(item, Rc::clone(odb_cell)));
 
-  res.await
+    res.await
 }
-
 
 pub async fn insert(item: &dyn DbItem) -> Result<PutItemOutput, RusotoError<PutItemError>> {
     //let _res = _insert(qr_entry, Rc::new(DynamoDbClient::new(Region::EuNorth1)));
 
     println!("put 123");
 
-   //_res.await
+    //_res.await
 
     //let res = DB.with(|odb_cell| {
-      //_insert(qr_entry, Rc::clone(odb_cell))
-        println!("_insert");
-        let client = DynamoDbClient::new(Region::EuNorth1).with_retries(Policy::default());
+    //_insert(qr_entry, Rc::clone(odb_cell))
+    println!("_insert");
+    let client = DynamoDbClient::new(Region::EuNorth1).with_retries(Policy::default());
 
-        let item_attr = item.get_attribute_value_map();
+    let item_attr = item.get_attribute_value_map();
 
-        let put_item_request = PutItemInput {
-            table_name: (*TABLE_NAME).to_string(),
-            item: item_attr,
-            ..PutItemInput::default()
-        };
+    let put_item_request = PutItemInput {
+        table_name: (*TABLE_NAME).to_string(),
+        item: item_attr,
+        ..PutItemInput::default()
+    };
 
-       //println!("put req: {:?}", put_item_request);
-        println!("put 1");
+    //println!("put req: {:?}", put_item_request);
+    println!("put 1");
 
-        let res2 = client.put_item(put_item_request).await;
+    let res2 = client.put_item(put_item_request).await;
 
-        println!("put 2");
+    println!("put 2");
 
-        //res.await2
-        let res = res2;
+    //res.await2
+    let res = res2;
     //});
 
     res
 }
 
-pub async fn update(qr_entry: &dyn DbItem) -> Result<UpdateItemOutput, RusotoError<UpdateItemError>> {
-    let _res = DB.with(|odb_cell| {
-       _update(qr_entry, Rc::clone(odb_cell))
-   });
+pub async fn update(
+    qr_entry: &dyn DbItem,
+) -> Result<UpdateItemOutput, RusotoError<UpdateItemError>> {
+    let _res = DB.with(|odb_cell| _update(qr_entry, Rc::clone(odb_cell)));
 
-   _res.await
+    _res.await
 }
 
+pub async fn delete(
+    pk: &DynamoPrimaryKey,
+) -> Result<DeleteItemOutput, RusotoError<DeleteItemError>> {
+    let _res = DB.with(|odb_cell| _delete(pk, Rc::clone(odb_cell)));
 
-pub async fn delete(pk: &DynamoPrimaryKey) -> Result<DeleteItemOutput, RusotoError<DeleteItemError>> {
-    let _res = DB.with(|odb_cell| {
-       _delete(pk, Rc::clone(odb_cell))
-   });
-
-   _res.await
+    _res.await
 }
 
-pub async fn query(partition_key: &DynamoPartitionKey, sort_key: Option<&DynamoSearchKey>) -> Result<QueryOutput, RusotoError<QueryError>> {
-
+pub async fn query(
+    partition_key: &DynamoPartitionKey,
+    sort_key: Option<&DynamoSearchKey>,
+) -> Result<QueryOutput, RusotoError<QueryError>> {
     let client = DynamoDbClient::new(Region::EuNorth1);
     let mut val_map: HashMap<String, AttributeValue> = HashMap::new();
     val_map.insert(
-            ":partitionkeyval".to_string(),
-            partition_key.to_vec().into_attr()
-        );
+        ":partitionkeyval".to_string(),
+        partition_key.to_vec().into_attr(),
+    );
 
     let key_cond_expr = match sort_key {
         Some(s) => {
-            val_map.insert(
-                    ":sortkeyval".to_string(),
-                    s.to_owned().into_attr()
-                );
-            format!("{} = :partitionkeyval AND begins_with({}, :sortkeyval)", *PARTITION_KEY_NAME, *SORT_KEY_NAME)
-        },
-        None    => format!("{} = :partitionkeyval", *PARTITION_KEY_NAME) //format!("{} = :partitionkeyval", *PARTITION_KEY_NAME),
+            val_map.insert(":sortkeyval".to_string(), s.to_owned().into_attr());
+            format!(
+                "{} = :partitionkeyval AND begins_with({}, :sortkeyval)",
+                *PARTITION_KEY_NAME, *SORT_KEY_NAME
+            )
+        }
+        None => format!("{} = :partitionkeyval", *PARTITION_KEY_NAME), //format!("{} = :partitionkeyval", *PARTITION_KEY_NAME),
     };
 
     let attr_vals = Some(val_map);
@@ -174,7 +156,7 @@ pub fn _query(partition_key: &DynamoPartitionKey, sort_key: Option<&DynamoSearch
         ..Default::default()
     };
 
-    
+
     /*
     DB.with(|odb_cell| {
        Rc::clone(odb_cell).query(query_input)
@@ -182,7 +164,7 @@ pub fn _query(partition_key: &DynamoPartitionKey, sort_key: Option<&DynamoSearch
     */
 
     client.query(query_input)
-    
+
 }
 */
 
@@ -198,13 +180,13 @@ async fn get_tables(client: Rc<DynamoDbClient>) {
                     for table_name in table_name_list {
                         println!("{}", table_name);
                     }
-                },
+                }
                 None => println!("No tables in database!"),
             }
-        },
+        }
         Err(error) => {
             println!("Error: {:?}", error);
-        },
+        }
     }
 }
 
@@ -231,8 +213,15 @@ async fn _insert(item: &dyn DbItem, client: Rc<DynamoDbClient>) -> Result<PutIte
 }
 */
 
-async fn _get(item: &DynamoPrimaryKey, client: Rc<DynamoDbClient>) -> Result<GetItemOutput, RusotoError<GetItemError>> { //, Error=GetItemError> {
-    println!("_get: partition: {:?} sort: {:?}", item.partition_key, item.sort_key);
+async fn _get(
+    item: &DynamoPrimaryKey,
+    client: Rc<DynamoDbClient>,
+) -> Result<GetItemOutput, RusotoError<GetItemError>> {
+    //, Error=GetItemError> {
+    println!(
+        "_get: partition: {:?} sort: {:?}",
+        item.partition_key, item.sort_key
+    );
 
     let key = get_key(item);
 
@@ -243,14 +232,17 @@ async fn _get(item: &DynamoPrimaryKey, client: Rc<DynamoDbClient>) -> Result<Get
     };
 
     //println!("get req: {:?}", get_item_request);
- 
+
     let res = client.get_item(get_item_request);
 
     res.await
 }
 
-async fn _update(item: &dyn DbItem, client: Rc<DynamoDbClient>) -> Result<UpdateItemOutput, RusotoError<UpdateItemError>> { //Result<Qrcode, AttributeError> {
-
+async fn _update(
+    item: &dyn DbItem,
+    client: Rc<DynamoDbClient>,
+) -> Result<UpdateItemOutput, RusotoError<UpdateItemError>> {
+    //Result<Qrcode, AttributeError> {
 
     println!("_update");
     //println!("_update: {:?}", item);
@@ -285,31 +277,32 @@ async fn _update(item: &dyn DbItem, client: Rc<DynamoDbClient>) -> Result<Update
             update_expression: Some("SET title = :title_val, location2 = :location_val".to_string())
         };
         */
-        let update_item_request = UpdateItemInput {
-                attribute_updates: None,
-                condition_expression: None, //Some("owner_id = :null_attribute_type".to_string()),
-                conditional_operator: None,
-                expected: None,
-                expression_attribute_names: None,
-                expression_attribute_values: attr_val,
-                key: get_key(&item.get_primary_key()),
-                return_consumed_capacity: None,
-                return_item_collection_metrics: None,
-                return_values: Some("ALL_NEW".to_string()), //None,
-                table_name: (*TABLE_NAME).to_string(),
-                update_expression: update_expr,
-            };
+    let update_item_request = UpdateItemInput {
+        attribute_updates: None,
+        condition_expression: None, //Some("owner_id = :null_attribute_type".to_string()),
+        conditional_operator: None,
+        expected: None,
+        expression_attribute_names: None,
+        expression_attribute_values: attr_val,
+        key: get_key(&item.get_primary_key()),
+        return_consumed_capacity: None,
+        return_item_collection_metrics: None,
+        return_values: Some("ALL_NEW".to_string()), //None,
+        table_name: (*TABLE_NAME).to_string(),
+        update_expression: update_expr,
+    };
 
     let res = client.update_item(update_item_request);
 
     //println!("_update resp: {:?}", res);
 
     res.await
-
-
 }
 
-async fn _delete(pk: &DynamoPrimaryKey, client: Rc<DynamoDbClient>) -> Result<DeleteItemOutput, RusotoError<DeleteItemError>> {
+async fn _delete(
+    pk: &DynamoPrimaryKey,
+    client: Rc<DynamoDbClient>,
+) -> Result<DeleteItemOutput, RusotoError<DeleteItemError>> {
     //println!("_delete: {:?}", pk);
     let key = get_key(pk);
 
@@ -326,19 +319,18 @@ async fn _delete(pk: &DynamoPrimaryKey, client: Rc<DynamoDbClient>) -> Result<De
     //println!("_del resp: {:?}", res);
 
     res.await
-
 }
 
 fn get_key(pk: &DynamoPrimaryKey) -> HashMap<String, AttributeValue> {
     let mut key: HashMap<String, AttributeValue> = HashMap::new();
     key.insert(
         (*PARTITION_KEY_NAME).to_string(),
-        pk.partition_key.to_vec().into_attr()
+        pk.partition_key.to_vec().into_attr(),
     );
 
     key.insert(
         (*SORT_KEY_NAME).to_string(),
-        pk.sort_key.to_owned().into_attr()
+        pk.sort_key.to_owned().into_attr(),
     );
 
     key

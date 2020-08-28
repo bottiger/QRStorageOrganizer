@@ -1,17 +1,23 @@
 extern crate base64;
 
-use harsh::{HarshBuilder};
-use uuid::Uuid;
-use log::info;
+use crate::model::qrcode::QrCode;
+use crate::model::schema::DynamoSearchKey;
+use harsh::HarshBuilder;
+
 use crate::model::qrgroup::QrGroup;
 use crate::model::schema::u256;
-use crate::model::schema::DynamoPartitionKey;
-use sha3::{Digest, Sha3_256};
-use base64::{encode, decode, DecodeError};
+use log::info;
+
+use base64::{encode, DecodeError};
 use bytes::Bytes;
+use sha3::{Digest, Sha3_256};
 use std::convert::TryInto;
 
-const VERSION: u8 = 1;
+// const VERSION: u8 = 1;
+
+/// Each QR code contains 256 bits
+/// The first 192 bits are the group ID
+/// The next 64 bits are for the QR code
 
 pub fn to_base64(bytes: Bytes) -> String {
     let encoded = encode(bytes);
@@ -26,7 +32,7 @@ pub fn vec_to_u256(v: &Vec<u8>) -> Result<u256, DecodeError> {
 pub fn slice_to_u256(s: &[u8]) -> Result<u256, DecodeError> {
     match s.try_into() {
         Ok(v) => Ok(v),
-        Err(E) => Err(DecodeError::InvalidLength),
+        Err(_e) => Err(DecodeError::InvalidLength),
     }
 }
 
@@ -39,7 +45,6 @@ pub fn gen_uuid_str(name: &str) -> u256 {
 }
 
 pub fn gen_uuid(name: &[u8]) -> u256 {
-
     let mut hasher = Sha3_256::new();
     hasher.input(name);
     let result = hasher.result();
@@ -47,13 +52,26 @@ pub fn gen_uuid(name: &[u8]) -> u256 {
     slice_to_u256(result.as_slice()).ok().unwrap()
 }
 
-
-pub fn gen_qr_id(group: &QrGroup, val: u64) -> harsh::Result<String> {
-
-    let harsh = HarshBuilder::new().salt(group.qr_salt.to_owned().to_vec()).init()?;
+pub fn gen_qr_id(group: &QrGroup, val: DynamoSearchKey) -> harsh::Result<String> {
+    let harsh = HarshBuilder::new()
+        .salt(group.qr_salt.to_owned().to_vec())
+        .init()?;
 
     let valvec = vec![val];
     let qr_id = harsh.encode(&valvec).unwrap();
     info!("Calculating ID. from {:?} => {:?}", val, qr_id);
     Ok(qr_id)
+}
+
+pub fn gen_qr_scan_val(code: &QrCode) -> String {
+    let prefix = "https://qrst.dk/".to_owned();
+    let url = prefix + &base64::encode(code.group_id).to_owned() + "-" + &code.id.to_string();
+
+    url
+}
+
+pub fn gen_qr_scan_val_short(_group: &QrGroup, val: DynamoSearchKey) -> String {
+    let url = &val.to_string();
+
+    url.to_string()
 }

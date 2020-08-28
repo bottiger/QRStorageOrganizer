@@ -1,6 +1,6 @@
-use dynomite::AttributeValue;
 use dynomite::Attribute;
 use dynomite::AttributeError;
+use dynomite::AttributeValue;
 
 #[derive(Default, PartialEq, Debug, Clone)]
 pub struct QrItem {
@@ -16,6 +16,9 @@ impl Attribute for QrItem {
     }
 
     fn from_attr(value: AttributeValue) -> Result<Self, AttributeError> {
-        value.s.map(|s| QrItem{name: s}).ok_or(AttributeError::InvalidType)
+        value
+            .s
+            .map(|s| QrItem { name: s })
+            .ok_or(AttributeError::InvalidType)
     }
 }

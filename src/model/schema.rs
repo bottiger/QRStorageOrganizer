@@ -1,30 +1,34 @@
 #[cfg(feature = "default")]
 use rusoto_core_default::Region;
 
-#[cfg(feature = "rustls")]
-use rusoto_core_rustls::Region;
 use dynomite::AttributeError;
 use dynomite::AttributeValue;
+#[cfg(feature = "rustls")]
+use rusoto_core_rustls::Region;
 use std::collections::HashMap;
 use std::convert::TryInto;
 
 //use self::dynomite::Attributes;
 
 lazy_static! {
-    pub static ref TABLE_NAME: &'static str = "qr-storage";
+    pub static ref TABLE_NAME: &'static str = "qrstorage";
     pub static ref PARTITION_KEY_NAME: &'static str = "qr_group_id";
     pub static ref SORT_KEY_NAME: &'static str = "qr_val";
-    pub static ref SORT_KEY_GROUP_VAL: &'static str = "qrgroup";
+    pub static ref SORT_KEY_GROUP_VAL: &'static u64 = &0;
 }
 
-
-#[warn(non_camel_case_types)]
+#[allow(non_camel_case_types)]
 pub type u256 = [u8; 32];
-#[warn(non_camel_case_types)]
+#[allow(non_camel_case_types)]
+pub type u192 = [u8; 32];
+#[allow(non_camel_case_types)]
 pub type u256DB = Vec<u8>;
-pub type DynamoPartitionKeyDB = u256DB;
-pub type DynamoPartitionKey = u256;
-pub type DynamoSearchKey    = String;
+#[allow(non_camel_case_types)]
+pub type u192DB = Vec<u8>;
+
+pub type DynamoPartitionKeyDB = u192DB;
+pub type DynamoPartitionKey = u192;
+pub type DynamoSearchKey = u64;
 pub struct DynamoPrimaryKey {
     pub partition_key: DynamoPartitionKey,
     pub sort_key: DynamoSearchKey,

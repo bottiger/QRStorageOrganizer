@@ -1,19 +1,17 @@
 #[cfg(test)]
 mod tests {
-    
+
     use qrstore::config::init_env;
-    use qrstore::fixtures::get_fixture;
-    use qrstore::dynamodb::insert_group;
-    use qrstore::dynamodb::get_group;
     use qrstore::dynamodb::crud::delete;
     use qrstore::dynamodb::crud::update;
+    use qrstore::dynamodb::get_group;
+    use qrstore::dynamodb::insert_group;
+    use qrstore::fixtures::get_fixture;
     use qrstore::model::qrcode::QrCodeDB;
     use qrstore::model::schema::DbItem;
-    
 
     #[tokio::test]
     async fn test_crud() {
-
         env_logger::init();
 
         init_env();

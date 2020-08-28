@@ -1,39 +1,29 @@
 extern crate fxhash;
 
-use rusoto_core::ByteStream;
-use image::ImageError;
-use image::load_from_memory;
 use crate::model::schema::DynamoPartitionKeyDB;
 use crate::model::schema::DynamoSearchKey;
-use image::RgbImage;
 use dynomite::Item;
-
-
-
-/*
-fn hash_test() -> () {
-    let hash = fxhash::hash32(&data);
-    println!("{}", hash);
-}
-*/
+use image::load_from_memory;
+use image::ImageError;
+use image::RgbImage;
 
 pub type QrImageHash = u32;
 
 #[derive(Debug, Clone)]
 pub struct QrImage {
-	pub hash32: QrImageHash, 
-	pub image: RgbImage,
+    pub hash32: QrImageHash,
+    pub image: RgbImage,
 }
 
 impl QrImage {
-    pub fn new(data: Vec<u8>) -> Result<QrImage,ImageError> {
-    	let rgb_image = load_from_memory(&data)?.to_rgb();
-    	let qr_image = QrImage {
-        	image: rgb_image.clone(),
-        	hash32: fxhash::hash32(&rgb_image),
-    	};
+    pub fn new(data: Vec<u8>) -> Result<QrImage, ImageError> {
+        let rgb_image = load_from_memory(&data)?.to_rgb();
+        let qr_image = QrImage {
+            image: rgb_image.clone(),
+            hash32: fxhash::hash32(&rgb_image),
+        };
 
-    	Ok(qr_image)
+        Ok(qr_image)
     }
 }
 

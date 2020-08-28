@@ -1,19 +1,18 @@
+use crate::dynamodb::qruuid::slice_to_u256;
+use crate::dynamodb::qruuid::vec_to_u256;
+use crate::model::qrcode::QrCode;
+use crate::model::schema::u256;
 use crate::model::schema::u256DB;
 use crate::model::schema::DbItem;
-use crate::dynamodb::qruuid::slice_to_u256;
-use crate::model::schema::DynamoPrimaryKey;
 use crate::model::schema::DynamoDbType;
-use std::collections::HashMap;
-use crate::model::schema::DynamoPartitionKeyDB;
-use rusoto_dynamodb::AttributeValue;
 use crate::model::schema::DynamoPartitionKey;
+use crate::model::schema::DynamoPartitionKeyDB;
+use crate::model::schema::DynamoPrimaryKey;
 use crate::model::schema::DynamoSearchKey;
-use crate::model::schema::u256;
-use crate::model::qrcode::QrCode;
-use crate::dynamodb::qruuid::vec_to_u256;
-use dynomite::Item;
 use dynomite::Attribute;
-
+use dynomite::Item;
+use rusoto_dynamodb::AttributeValue;
+use std::collections::HashMap;
 
 #[derive(Default, Debug, Clone)]
 pub struct QrGroup {
@@ -65,7 +64,7 @@ impl From<QrGroup> for QrGroupDB {
 
 impl DbItem for QrGroupDB {
     fn get_primary_key(&self) -> DynamoPrimaryKey {
-        DynamoPrimaryKey{
+        DynamoPrimaryKey {
             partition_key: self.get_partition_key(),
             sort_key: self.get_sort_key(),
         }
@@ -91,10 +90,8 @@ impl DbItem for QrGroupDB {
 
     fn get_update_expr(&self) -> (Option<HashMap<String, AttributeValue>>, Option<String>) {
         let mut expression_attribute_values = HashMap::new();
-        expression_attribute_values.insert(
-                ":count".to_string(),
-                self.qr_count.to_owned().into_attr()
-            );
+        expression_attribute_values
+            .insert(":count".to_string(), self.qr_count.to_owned().into_attr());
         /*
         expression_attribute_values.insert(
                 ":codes".to_string(),

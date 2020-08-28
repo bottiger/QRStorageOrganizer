@@ -2,18 +2,17 @@ extern crate dotenv;
 #[macro_use]
 extern crate lazy_static;
 
-pub mod model;
-//pub mod schema;
-pub mod im_encoder;
-pub mod rest;
-pub mod dynamodb;
-//pub mod types;
-pub mod fixtures;
-pub mod storage;
 pub mod config;
+pub mod dynamodb;
+pub mod fixtures;
+pub mod im_encoder;
+pub mod model;
+pub mod pdf_generator;
+pub mod rest;
+pub mod storage;
 
 #[no_mangle]
-pub extern fn rust_fn(x: i32) -> i32 {
+pub extern "C" fn rust_fn(x: i32) -> i32 {
     println!("Hello from rust\nI'll return: {}", x.pow(2));
     x.pow(2)
- }
+}

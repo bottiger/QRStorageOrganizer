@@ -1,6 +1,6 @@
 extern crate qrstore;
 
-use actix_web::{web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{web, App, HttpServer};
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
@@ -9,7 +9,7 @@ async fn main() -> std::io::Result<()> {
             .route("/", web::get().to(qrstore::rest::index))
             .route("/again", web::get().to(qrstore::rest::index2))
     })
-    .bind("0.0.0.0:80")?
+    .bind("0.0.0.0:8080")?
     .run()
     .await
 }

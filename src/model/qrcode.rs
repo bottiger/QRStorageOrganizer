@@ -1,19 +1,18 @@
-use crate::model::qrimage::QrImageHash;
 use crate::dynamodb::qruuid::slice_to_u256;
-use crate::model::schema::DbItem;
-use crate::model::schema::DynamoPrimaryKey;
-use dynomite::AttributeValue;
-use dynomite::Attribute;
-use std::collections::hash_map::HashMap;
-use crate::model::schema::DynamoDbType;
-use crate::model::schema::DynamoSearchKey;
-use crate::model::qrimage::QrImage;
-use crate::model::qritem::QrItem;
 use crate::dynamodb::qruuid::vec_to_u256;
-use crate::model::schema::DynamoPartitionKeyDB;
+use crate::model::qrimage::QrImage;
+use crate::model::qrimage::QrImageHash;
+use crate::model::qritem::QrItem;
+use crate::model::schema::DbItem;
+use crate::model::schema::DynamoDbType;
 use crate::model::schema::DynamoPartitionKey;
+use crate::model::schema::DynamoPartitionKeyDB;
+use crate::model::schema::DynamoPrimaryKey;
+use crate::model::schema::DynamoSearchKey;
+use dynomite::Attribute;
+use dynomite::AttributeValue;
 use dynomite::Item;
-
+use std::collections::hash_map::HashMap;
 
 #[derive(Default, Debug, Clone)]
 pub struct QrCode {
@@ -72,7 +71,7 @@ impl From<QrCode> for QrCodeDB {
 
 impl DbItem for QrCodeDB {
     fn get_primary_key(&self) -> DynamoPrimaryKey {
-        DynamoPrimaryKey{
+        DynamoPrimaryKey {
             partition_key: self.get_partition_key(),
             sort_key: self.get_sort_key(),
         }
@@ -94,14 +93,12 @@ impl DbItem for QrCodeDB {
 
     fn get_update_expr(&self) -> (Option<HashMap<String, AttributeValue>>, Option<String>) {
         let mut expression_attribute_values = HashMap::new();
+        expression_attribute_values
+            .insert(":title_val".to_string(), self.title.to_owned().into_attr());
         expression_attribute_values.insert(
-                ":title_val".to_string(),
-                self.title.to_owned().into_attr()
-            );
-        expression_attribute_values.insert(
-                ":location_val".to_string(),
-                self.location.to_owned().unwrap().into_attr()
-            );
+            ":location_val".to_string(),
+            self.location.to_owned().unwrap().into_attr(),
+        );
 
         let attr_vals = Some(expression_attribute_values);
         let update_expr = Some("SET title = :title_val, location2 = :location_val".to_string());

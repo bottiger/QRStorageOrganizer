@@ -1,84 +1,34 @@
 extern crate image;
 extern crate qrcode;
+//extern crate qrcodegen;
 
+use image::DynamicImage;
+
+use crate::model::qrcode::QrCode;
+
+use crate::dynamodb::qruuid::gen_qr_scan_val;
 use image::ImageError;
-use image::GrayImage;
-use qrcode::QrCode;
-use image::Luma;
 
+use image::Luma;
+use qrcode::QrCode as QrCodeGen;
+use std::path::Path;
 
 //use crate::types;
 
-
-/*
-fn to_img() {
+pub fn to_img(qr: &QrCode) -> DynamicImage {
+    let val = gen_qr_scan_val(qr);
     // Encode some data into bits.
-    let code = QrCode::new(b"01234567").unwrap();
+    let code = QrCodeGen::new(val).unwrap();
 
     // Render the bits into an image.
     let image = code.render::<Luma<u8>>().build();
 
+    DynamicImage::ImageLuma8(image)
     // Save the image.
-    image.save("/tmp/qrcode.png").unwrap();
-}
-*/
-
-
-
-// _entry: &types::QrEntry
-pub fn to_img() -> GrayImage { //Luma<u8> {
-    let code = QrCode::new(b"01234567").unwrap();
-    
-
-    let image = code.render::<Luma<u8>>().build();
-    //      //let image: GrayImage = code.render::<GrayImage>().min_dimensions(100, 100 ).build();
-
-    image
-
-    //let string = code.render::<char>()
-    //    .quiet_zone(false)
-    //    .module_dimensions(2, 1)
-    //    .build();
-    //println!("{}", string);
+    //image.save(path).unwrap();
 }
 
-//pub fn from_img(img2: ImageResult<DynamicImage>) -> String {
-
-/*
-pub fn from_img() -> String {
-    let decoder = bardecoder::default_decoder();
-
-    let img = image::open("D:\\qrstorage\\out\\qr.png").unwrap();
-    let results = decoder.decode(&img);
-    //for result in results {
-    //    println!("{}", result.unwrap());
-    //}
-
-    match results.first() {
-        Some(x) => {
-            match x {
-                Ok(v) => v.to_owned(),
-                Err(_e) => "failure".to_owned(),
-            }
-        }
-        None => "err".to_owned(),
-    }
-}
-*/
-
-pub fn write(path: &str, image: GrayImage) -> Result<(), ImageError> {
+pub fn write_img(path: &Path, qr: &QrCode) -> Result<(), ImageError> {
+    let image = to_img(qr);
     image.save(path)
 }
-
-/*
-pub fn to_str(_entry: &QrEntry) -> String {
-    let code = QrCode::new(b"01234567").unwrap();
-    let string = code.render::<char>()
-        .quiet_zone(false)
-        .module_dimensions(2, 1)
-        .build();
-
-    string
-}
-*/
-
