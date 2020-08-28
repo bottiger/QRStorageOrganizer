@@ -77,3 +77,5 @@ serde = "^1"
 serde_json = "^1"
 serde_derive = "^1"
 simple_logger = "^1"
+
+lambda_http = { git = "https://github.com/awslabs/aws-lambda-rust-runtime/", branch = "master"}
