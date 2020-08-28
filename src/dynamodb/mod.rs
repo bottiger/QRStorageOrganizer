@@ -102,8 +102,8 @@ pub async fn insert_qrcode(item: QrCode) -> Result<PutItemOutput, RusotoError<Pu
 
     for nres in join_all(futures).await.into_iter() {
         match nres {
-            Ok(r) => println!("Inserted image"), //log::debug!("Succesfully inserted image: {:?}", r),
-            Err(e) => println!("Failed to insert image"), //log::warn!("Failed to insert image: {:?}", e),
+            Ok(r) => println!("Inserted image: {:?}", r), //log::debug!("Succesfully inserted image: {:?}", r),
+            Err(e) => println!("Failed to insert image: {:?}", e), //log::warn!("Failed to insert image: {:?}", e),
         }
     }
 
