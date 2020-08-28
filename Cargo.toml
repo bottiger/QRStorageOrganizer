@@ -3,7 +3,6 @@ name = "qrstore"
 version = "0.1.0"
 authors = ["Arvid Böttiger <arvid@exensor.com>"]
 edition = "2018"
-#build = "build.rs"
 autobins = false
 
 #[lib]
@@ -23,6 +22,11 @@ path = "src/bin/rest.rs"
 [[bin]]
 name = "bootstrap"
 path = "src/bin/lambda.rs"
+
+# AWS Lambda - Serverless
+[[bin]]
+name = "serverless"
+path = "src/bin/serverless.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
