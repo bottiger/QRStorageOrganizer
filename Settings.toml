@@ -1,7 +1,7 @@
-db_key = "AKIA3MNCVP2PO65A5FP4"
-db_secret = "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"
+db_key = ""
+db_secret = ""
 
 storage_endpoint = "https://s3.eu-central-1.wasabisys.com"
 storage_region = "eu-central-1"
-storage_key = "2TM8E0W1AEUNZKFXF3DS"
-storage_secret = "mRRccyWXbzTWueohKm47ITfpMVbnv2zeBEc0YBLd"
+storage_key = ""
+storage_secret = ""
