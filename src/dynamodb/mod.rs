@@ -91,15 +91,19 @@ pub async fn insert_qrcode(item: QrCode) -> Result<PutItemOutput, RusotoError<Pu
     let qrdb = QrCodeDB::from(item.clone());
     let res = insert(&qrdb).await?;
 
+    println!("Inserted qr code {:?}", item.title);
+
     let futures = item
         .images
         .into_iter()
-        .map({ |i| put_image(qrdb.get_primary_key(), i) });
+        .map( |i| put_image(qrdb.get_primary_key(), i) );
+
+    println!("Inserting images");
 
     for nres in join_all(futures).await.into_iter() {
         match nres {
-            Ok(r) => log::debug!("Succesfully inserted image: {:?}", r),
-            Err(e) => log::warn!("Failed to insert image: {:?}", e),
+            Ok(r) => println!("Inserted image"), //log::debug!("Succesfully inserted image: {:?}", r),
+            Err(e) => println!("Failed to insert image"), //log::warn!("Failed to insert image: {:?}", e),
         }
     }
 
