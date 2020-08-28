@@ -19,9 +19,10 @@ use rusoto_s3::{PutObjectRequest, S3Client, S3};
 pub mod image_store;
 
 fn get_credential_provider() -> StaticProvider {
-    log::debug!("Fetching storage provider credentials");
     let db_key = get_config().get::<String>(&"storage_key").unwrap();
     let db_secret = get_config().get::<String>(&"storage_secret").unwrap();
+    log::debug!("Fetching storage provider credentials. key: {:?}", db_key);
+    println!("Fetching storage provider credentials. key: {:?}", db_key);
     StaticProvider::new_minimal(db_key, db_secret)
 }
 
