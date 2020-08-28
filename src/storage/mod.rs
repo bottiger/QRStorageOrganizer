@@ -19,12 +19,14 @@ use rusoto_s3::{PutObjectRequest, S3Client, S3};
 pub mod image_store;
 
 fn get_credential_provider() -> StaticProvider {
+    log::debug!("Fetching storage provider credentials");
     let db_key = get_config().get::<String>(&"storage_key").unwrap();
     let db_secret = get_config().get::<String>(&"storage_secret").unwrap();
     StaticProvider::new_minimal(db_key, db_secret)
 }
 
 fn get_endpoint() -> Region {
+    log::debug!("Fetching storage provider endpoint");
     let storage_region = get_config().get::<String>(&"storage_region").unwrap();
     let storage_endpoint = get_config().get::<String>(&"storage_endpoint").unwrap();
     Region::Custom {

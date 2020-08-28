@@ -70,6 +70,7 @@ jobs:
           STORAGE_STORAGE_REGION: ${{ secrets.STORAGE_REGION }}
           STORAGE_STORAGE_SECRET: ${{ secrets.STORAGE_SECRET }}
           RUST_BACKTRACE: 1
+          RUST_LOG: debug
           #STAGE: prod
         run: |
           npm install
