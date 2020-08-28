@@ -96,7 +96,7 @@ pub async fn insert_qrcode(item: QrCode) -> Result<PutItemOutput, RusotoError<Pu
     let futures = item
         .images
         .into_iter()
-        .map( |i| put_image(qrdb.get_primary_key(), i) );
+        .map(|i| put_image(qrdb.get_primary_key(), i));
 
     println!("Inserting images");
 
