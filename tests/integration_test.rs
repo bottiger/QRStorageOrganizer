@@ -17,6 +17,7 @@ mod tests {
         init_env();
 
         log::debug!("Starting test");
+        println!("Starting test");
 
         let f = get_fixture().unwrap();
         assert!(insert_group(&f).await.is_ok());

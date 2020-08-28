@@ -71,6 +71,11 @@ pub async fn insert_group(item: &QrGroup) -> Result<PutItemOutput, RusotoError<P
         item.group_id,
         base64::encode(item.group_id)
     );
+    println!(
+        "insert group: {:?} => {:?}",
+        item.group_id,
+        base64::encode(item.group_id)
+    );
 
     let qr_group_db: QrGroupDB = QrGroupDB::from(item.clone());
     let group_put: Result<PutItemOutput, RusotoError<PutItemError>> = insert(&qr_group_db).await;
@@ -83,6 +88,11 @@ pub async fn insert_group(item: &QrGroup) -> Result<PutItemOutput, RusotoError<P
 
 pub async fn insert_qrcode(item: QrCode) -> Result<PutItemOutput, RusotoError<PutItemError>> {
     log::warn!(
+        "insert qrcode: {:?} => {:?}",
+        item.title,
+        base64::encode(item.group_id)
+    );
+    println!(
         "insert qrcode: {:?} => {:?}",
         item.title,
         base64::encode(item.group_id)
