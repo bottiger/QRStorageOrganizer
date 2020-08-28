@@ -26,6 +26,11 @@ pub async fn put_image(
         base64::encode(&primary_key.partition_key),
         key
     );
+    println!(
+        "insert image: {:?} => {:?}",
+        base64::encode(&primary_key.partition_key),
+        key
+    );
 
     let bytes = image.image.into_vec();
     let body = Some(bytes.into());
