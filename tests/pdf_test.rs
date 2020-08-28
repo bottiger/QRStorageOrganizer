@@ -3,14 +3,11 @@ mod tests {
 
     use qrstore::config::init_env;
     use qrstore::fixtures::get_fixture;
-    use qrstore::im_encoder::to_img;
+    use qrstore::pdf_generator::make_pdf;
     use qrstore::pdf_generator::save_pdf;
+    use std::fs::File;
     use std::path::PathBuf;
 
-    use qrstore::pdf_generator::make_pdf;
-    use std::fs::File;
-
-    
     #[tokio::test]
     async fn test_pdf() {
         env_logger::init();
