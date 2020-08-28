@@ -10,11 +10,12 @@ mod tests {
     use qrstore::pdf_generator::make_pdf;
     use std::fs::File;
 
+    
     #[tokio::test]
     async fn test_pdf() {
-        //env_logger::init();
-        //init_env();
-        //let f = get_fixture().unwrap();
+        env_logger::init();
+        init_env();
+        let f = get_fixture().unwrap();
 
         let mut pdf_source = PathBuf::from(&env!("CARGO_MANIFEST_DIR").to_owned());
         pdf_source.push("out");
@@ -25,7 +26,7 @@ mod tests {
 
         log::debug!("Writing pdf to location: {:?}", file);
 
-        let doc = make_pdf();
+        let doc = make_pdf(f.qrcodes);
         let res = save_pdf(doc, file);
 
         assert!(res.is_ok());
