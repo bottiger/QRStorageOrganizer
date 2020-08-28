@@ -9,7 +9,8 @@ lazy_static! {
         .merge(config::File::with_name("Settings")).unwrap()
         // Add in settings from the environment (with a prefix of APP)
         // Eg.. `APP_DEBUG=1 ./target/app` would set the `debug` key
-        .merge(config::Environment::with_prefix("STORAGE")).unwrap().clone();
+        .merge(config::Environment::with_prefix("STORAGE")).unwrap()
+        .merge(config::Environment::with_prefix("AWS")).unwrap().clone();
 }
 
 pub fn get_config() -> Config {
