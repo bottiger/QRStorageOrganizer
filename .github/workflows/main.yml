@@ -40,6 +40,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Test
+      env:
+        RUST_BACKTRACE: 1
       run: cargo test
   # deploy on pushes to master branch
   # assumes aws credentials (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
@@ -65,6 +67,7 @@ jobs:
           STORAGE_STORAGE_KEY: ${{ secrets.STORAGE_KEY }}
           STORAGE_STORAGE_REGION: ${{ secrets.STORAGE_REGION }}
           STORAGE_STORAGE_SECRET: ${{ secrets.STORAGE_SECRET }}
+          RUST_BACKTRACE: 1
           #STAGE: prod
         run: |
           npm install
