@@ -1,3 +1,4 @@
+/*
 extern crate qrstore;
 
 use actix_web::{web, App, HttpServer};
@@ -13,3 +14,4 @@ async fn main() -> std::io::Result<()> {
     .run()
     .await
 }
+*/

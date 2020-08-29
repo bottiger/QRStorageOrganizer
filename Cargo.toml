@@ -14,19 +14,19 @@ autobins = false
 name = "cli"
 path = "src/bin/cli.rs"
 
-[[bin]]
-name = "rest"
-path = "src/bin/rest.rs"
+#[[bin]]
+#name = "rest"
+#path = "src/bin/rest.rs"
 
 # AWS Lambda
-[[bin]]
-name = "bootstrap"
-path = "src/bin/lambda.rs"
+#[[bin]]
+#name = "bootstrap"
+#path = "src/bin/lambda.rs"
 
 # AWS Lambda - Serverless
-[[bin]]
-name = "serverless"
-path = "src/bin/serverless.rs"
+#[[bin]]
+#name = "serverless"
+#path = "src/bin/serverless.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -40,13 +40,12 @@ config = "0.10.1"
 
 qrcode = "0.12"
 image = "0.23"
-#qrcodegen = "1.6.0"
 bardecoder = "0.2"
 fxhash = "0.2.1"
 printpdf = "0.3.2"
 
-actix-web = "2.0"
-actix-rt = "1.0.0"
+#actix-web = "2.0"
+#actix-rt = "1.0.0"
 env_logger = "0.7.1"
 
 simple-error = "0.2.2"
@@ -63,7 +62,7 @@ tokio = "0.2.22"
 log = "0.4"
 uuid = { version = "0.8", features = ["serde", "v5"] }
 
-rust-s3 = "0.22.12"
+#rust-s3 = "0.22.12"
 
 base64 = "0.12"
 harsh = "0.1.6"
@@ -72,10 +71,10 @@ sha3 = "0.8.2"
 bytes = "0.4.12"
 
 # lambda
-lambda_runtime = "0.1"
-serde = "^1"
-serde_json = "^1"
-serde_derive = "^1"
-simple_logger = "^1"
+#lambda_runtime = "0.1"
+#serde = "^1"
+#serde_json = "^1"
+#serde_derive = "^1"
+#simple_logger = "^1"
 
-lambda_http = { git = "https://github.com/awslabs/aws-lambda-rust-runtime/", branch = "master"}
+#lambda_http = { git = "https://github.com/awslabs/aws-lambda-rust-runtime/", branch = "master"}
