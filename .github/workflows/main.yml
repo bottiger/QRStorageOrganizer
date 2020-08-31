@@ -82,7 +82,7 @@ jobs:
     #needs: [compile]
     steps:    
       - name: Build and push Docker images
-        uses: docker/build-push-action@v1.1.0
+        uses: whoan/docker-build-with-cache-action@v5
         with:
           username: ${{ secrets.AWS_ACCESS_KEY_ID }}
           password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
