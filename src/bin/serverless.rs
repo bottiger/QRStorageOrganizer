@@ -1,4 +1,3 @@
-/*
 use lambda_http::{handler, lambda, Context, IntoResponse, Request};
 use serde_json::json;
 
@@ -13,4 +12,3 @@ async fn main() -> Result<(), Error> {
 async fn hello(_: Request, _: Context) -> Result<impl IntoResponse, Error> {
     Ok(json!({"message": "Go Serverless v1.0! Your function executed successfully!"}))
 }
-*/
