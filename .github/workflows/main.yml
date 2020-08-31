@@ -3,25 +3,25 @@ name: Main
 on: push
 
 jobs:
-  codestyle:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up Rust
-        uses: hecrj/setup-rust-action@v1
-        with:
-          components: rustfmt
-      - uses: actions/checkout@v2
-      - run: cargo fmt --all -- --check
+  #codestyle:
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - name: Set up Rust
+  #      uses: hecrj/setup-rust-action@v1
+  #      with:
+  #        components: rustfmt
+  #    - uses: actions/checkout@v2
+  #    - run: cargo fmt --all -- --check
 
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up Rust
-        uses: hecrj/setup-rust-action@v1
-        with:
-          components: clippy
-      - uses: actions/checkout@v2
-      - run: cargo clippy --all-targets -- -D clippy::all
+  #lint:
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - name: Set up Rust
+  #      uses: hecrj/setup-rust-action@v1
+  #      with:
+  #        components: clippy
+  #    - uses: actions/checkout@v2
+  #    - run: cargo clippy --all-targets -- -D clippy::all
 
   compile:
     runs-on: ubuntu-latest
@@ -31,30 +31,31 @@ jobs:
       - uses: actions/checkout@v2
       - run: cargo check --all
 
-  test:
-    needs: [codestyle, lint, compile]
-    runs-on: ubuntu-latest
-    steps:
-    - name: Setup Rust
-      uses: hecrj/setup-rust-action@v1
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Test #if: env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY && env.STORAGE_ENDPOINT && env.STORAGE_KEY && env.STORAGE_REGION && env.STORAGE_SECRET
-      env:
-        AWS_AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_DEFAULT_REGION: eu-north-1
-        STORAGE_STORAGE_ENDPOINT: ${{ secrets.STORAGE_ENDPOINT }}
-        STORAGE_STORAGE_KEY: ${{ secrets.STORAGE_KEY }}
-        STORAGE_STORAGE_REGION: ${{ secrets.STORAGE_REGION }}
-        STORAGE_STORAGE_SECRET: ${{ secrets.STORAGE_SECRET }}
-        RUST_BACKTRACE: 1
-        RUST_LOG: debug
-      run: |
-        echo "AWS_AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID"
-        cargo test
+  #test:
+  #  needs: [codestyle, lint, compile]
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #  - name: Setup Rust
+  #    uses: hecrj/setup-rust-action@v1
+  #  - name: Checkout
+  #    uses: actions/checkout@v2
+  #  - name: Test #if: env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY && env.STORAGE_ENDPOINT && env.STORAGE_KEY && env.STORAGE_REGION && env.STORAGE_SECRET
+  #    env:
+  #      AWS_AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #      AWS_AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #      AWS_DEFAULT_REGION: eu-north-1
+  #      STORAGE_STORAGE_ENDPOINT: ${{ secrets.STORAGE_ENDPOINT }}
+  #      STORAGE_STORAGE_KEY: ${{ secrets.STORAGE_KEY }}
+  #      STORAGE_STORAGE_REGION: ${{ secrets.STORAGE_REGION }}
+  #      STORAGE_STORAGE_SECRET: ${{ secrets.STORAGE_SECRET }}
+  #      RUST_BACKTRACE: 1
+  #      RUST_LOG: debug
+  #    run: |
+  #      echo "AWS_AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID"
+  #      cargo test
+  
   # deploy on pushes to master branch
   # assumes aws credentials (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
   # are configured in travis settings
