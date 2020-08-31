@@ -102,6 +102,7 @@ jobs:
         account_id: ${{ secrets.AWS_ACCOUNT_ID }}
         region: eu-north-1
         dockerfile: Dockerfile.web
+        repo: qrst
 
   #deploy:
   #  if: github.ref == 'refs/heads/master'
