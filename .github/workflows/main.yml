@@ -87,10 +87,21 @@ jobs:
           username: ${{ secrets.AWS_ACCESS_KEY_ID }}
           password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           registry: 782562066078.dkr.ecr.eu-north-1.amazonaws.com
-          #repository: 782562066078.dkr.ecr.eu-north-1.amazonaws.com/qrst
           tags: latest
           image_name: qrst
           dockerfile: Dockerfile.web
+
+  ecr-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: Terranovax/aws-ecr-deploy@v1
+      with:
+        access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+        region: eu-north-1
+        dockerfile: Dockerfile.web
 
   #deploy:
   #  if: github.ref == 'refs/heads/master'
