@@ -14,9 +14,9 @@ autobins = false
 name = "cli"
 path = "src/bin/cli.rs"
 
-#[[bin]]
-#name = "rest"
-#path = "src/bin/rest.rs"
+[[bin]]
+name = "rest"
+path = "src/bin/rest.rs"
 
 # AWS Lambda
 #[[bin]]
@@ -39,13 +39,13 @@ clap = "2.33"
 config = "0.10.1"
 
 qrcode = "0.12"
-image = "0.23"
-bardecoder = "0.2"
+image = "0.23.9"
+#bardecoder = "0.2"
 fxhash = "0.2.1"
 printpdf = "0.3.2"
 
-#actix-web = "2.0"
-#actix-rt = "1.0.0"
+actix-web = "2.0"
+actix-rt = "1.0.0"
 env_logger = "0.7.1"
 
 simple-error = "0.2.2"
