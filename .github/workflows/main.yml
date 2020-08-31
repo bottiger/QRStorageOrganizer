@@ -70,27 +70,27 @@ jobs:
         access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         account_id: ${{ secrets.AWS_ACCOUNT_ID }}
-        repo: docker/repo
+        repo: qrst
         region: eu-north-1
         tags: latest,${{ github.sha }}
         create_repo: true
         dockerfile: Dockerfile.web
 
-  #deploy:
-  #  if: github.ref == 'refs/heads/master'
-  #  runs-on: ubuntu-latest
+  deploy:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
     #needs: [compile]
-  #  steps:    
-  #    - name: Build and push Docker images
-  #      uses: docker/build-push-action@v1.1.0
-  #      with:
-  #        username: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #        password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #        registry: 782562066078.dkr.ecr.eu-north-1.amazonaws.com
+    steps:    
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v1.1.0
+        with:
+          username: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          registry: 782562066078.dkr.ecr.eu-north-1.amazonaws.com
           #repository: 782562066078.dkr.ecr.eu-north-1.amazonaws.com/qrst
-  #        tags: latest
-  #        image_name: qrst
-  #        dockerfile: Dockerfile.web
+          tags: latest
+          image_name: qrst
+          dockerfile: Dockerfile.web
 
   #deploy:
   #  if: github.ref == 'refs/heads/master'
