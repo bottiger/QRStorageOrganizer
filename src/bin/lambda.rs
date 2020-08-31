@@ -1,4 +1,3 @@
-/*
 #[macro_use]
 extern crate lambda_runtime as lambda;
 #[macro_use]
@@ -39,4 +38,3 @@ fn my_handler(e: CustomEvent, c: lambda::Context) -> Result<CustomOutput, Handle
         message: format!("Hello, {}!", e.first_name),
     })
 }
-*/
