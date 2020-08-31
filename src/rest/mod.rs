@@ -1,4 +1,3 @@
-/*
 extern crate qrcode;
 
 use actix_web::{HttpResponse, Responder};
@@ -10,4 +9,3 @@ pub async fn index() -> impl Responder {
 pub async fn index2() -> impl Responder {
     HttpResponse::Ok().body("Hello world again!")
 }
-*/
