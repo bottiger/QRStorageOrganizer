@@ -65,7 +65,7 @@ jobs:
   deploy:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
-    #needs: [test]
+    needs: [compile]
     steps:    
       - name: Build and push Docker images
         uses: docker/build-push-action@v1.1.0
@@ -75,7 +75,7 @@ jobs:
           registry: 782562066078.dkr.ecr.eu-north-1.amazonaws.com
           #repository: 782562066078.dkr.ecr.eu-north-1.amazonaws.com/qrst
           tags: latest
-          image_name: qrst-web
+          image_name: qrst
           dockerfile: Dockerfile.web
 
   #deploy:
