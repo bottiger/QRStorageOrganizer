@@ -1,3 +1,22 @@
+use lambda_http::{handler, lambda, Context, IntoResponse, Request};
+use serde_json::json;
+
+type Error = Box<dyn std::error::Error + Sync + Send + 'static>;
+
+#[tokio::main]
+async fn main() -> Result<(), Error> {
+    lambda::run(handler(hello)).await?;
+    Ok(())
+}
+
+async fn hello(_: Request, _: Context) -> Result<impl IntoResponse, Error> {
+    // `serde_json::Values` impl `IntoResponse` by default
+    // creating an application/json response
+    Ok(json!({
+        "message": "Go Serverless v1.0! Your function executed successfully!"
+    }))
+}
+/*
 use std::error::Error;
 
 use lambda_runtime::{error::HandlerError, lambda, Context};
@@ -35,3 +54,4 @@ fn my_handler(e: CustomEvent, c: Context) -> Result<CustomOutput, HandlerError> 
         message: format!("Hello, {}!", e.first_name),
     })
 }
+*/
