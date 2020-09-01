@@ -131,7 +131,7 @@ jobs:
           STORAGE_STORAGE_SECRET: ${{ secrets.STORAGE_SECRET }}
           RUST_BACKTRACE: 1
           RUST_LOG: debug
-          #STAGE: prod
+          STAGE: dev
         run: |
           npm install
           npx serverless deploy --conceal

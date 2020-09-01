@@ -10,14 +10,14 @@
 #    docs.serverless.com
 #
 # Happy Coding!
-service: aws-rust # NOTE: update this with your service name
+service: qrst-web # NOTE: update this with your service name
 provider:
-  name: aws
+  name: qrst
   runtime: rust
   #memorySize: 128
 # you can overwrite defaults here
 #  stage: dev
-  region: eu-north-1 #us-east-1
+  region: eu-north-1
 
 package:
   individually: true
