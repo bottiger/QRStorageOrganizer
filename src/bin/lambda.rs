@@ -1,14 +1,11 @@
-#[macro_use]
-extern crate lambda_runtime as lambda;
-#[macro_use]
-extern crate serde_derive;
-#[macro_use]
-extern crate log;
-extern crate simple_logger;
-
-use lambda::error::HandlerError;
-
 use std::error::Error;
+
+use lambda_runtime::{error::HandlerError, lambda, Context};
+use log::{self, error};
+use serde_derive::{Deserialize, Serialize};
+use simple_error::bail;
+use simple_logger;
+
 
 #[derive(Deserialize, Clone)]
 struct CustomEvent {
