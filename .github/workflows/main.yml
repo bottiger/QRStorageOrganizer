@@ -92,46 +92,47 @@ jobs:
           image_tag: ${{ steps.get_tag_name.outputs.GIT_TAG_NAME}}
           dockerfile: ./Dockerfile.web
 
-  deploy-lambda:
-    if: github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    #needs: [test]
-    steps:
-      - name: Set up Rust
-        uses: hecrj/setup-rust-action@v1
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Deploy #if: env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY && env.STORAGE_ENDPOINT && env.STORAGE_KEY && env.STORAGE_REGION && env.STORAGE_SECRET
-        env:
-          AWS_AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: eu-north-1
-          STORAGE_STORAGE_ENDPOINT: ${{ secrets.STORAGE_ENDPOINT }}
-          STORAGE_STORAGE_KEY: ${{ secrets.STORAGE_KEY }}
-          STORAGE_STORAGE_REGION: ${{ secrets.STORAGE_REGION }}
-          STORAGE_STORAGE_SECRET: ${{ secrets.STORAGE_SECRET }}
-          RUST_BACKTRACE: 1
-          RUST_LOG: debug
-          STAGE: dev
-        run: |
-          npm install
-          npx serverless deploy --conceal
-      - name: Deploy Producrtion #if: env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY && env.STORAGE_ENDPOINT && env.STORAGE_KEY && env.STORAGE_REGION && env.STORAGE_SECRET
-        env:
-          AWS_AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: eu-north-1
-          STORAGE_STORAGE_ENDPOINT: ${{ secrets.STORAGE_ENDPOINT }}
-          STORAGE_STORAGE_KEY: ${{ secrets.STORAGE_KEY }}
-          STORAGE_STORAGE_REGION: ${{ secrets.STORAGE_REGION }}
-          STORAGE_STORAGE_SECRET: ${{ secrets.STORAGE_SECRET }}
-          RUST_BACKTRACE: 1
-          RUST_LOG: debug
-          STAGE: prod
-        run: |
-          npm install
-          npx serverless deploy --conceal
+
+  # deploy-lambda:
+  #   if: github.ref == 'refs/heads/master'
+  #   runs-on: ubuntu-latest
+  #   #needs: [test]
+  #   steps:
+  #     - name: Set up Rust
+  #       uses: hecrj/setup-rust-action@v1
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #     - name: Deploy #if: env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY && env.STORAGE_ENDPOINT && env.STORAGE_KEY && env.STORAGE_REGION && env.STORAGE_SECRET
+  #       env:
+  #         AWS_AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         AWS_AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         AWS_DEFAULT_REGION: eu-north-1
+  #         STORAGE_STORAGE_ENDPOINT: ${{ secrets.STORAGE_ENDPOINT }}
+  #         STORAGE_STORAGE_KEY: ${{ secrets.STORAGE_KEY }}
+  #         STORAGE_STORAGE_REGION: ${{ secrets.STORAGE_REGION }}
+  #         STORAGE_STORAGE_SECRET: ${{ secrets.STORAGE_SECRET }}
+  #         RUST_BACKTRACE: 1
+  #         RUST_LOG: debug
+  #         STAGE: dev
+  #       run: |
+  #         npm install
+  #         npx serverless deploy --conceal
+  #     - name: Deploy Producrtion #if: env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY && env.STORAGE_ENDPOINT && env.STORAGE_KEY && env.STORAGE_REGION && env.STORAGE_SECRET
+  #       env:
+  #         AWS_AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         AWS_AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         AWS_DEFAULT_REGION: eu-north-1
+  #         STORAGE_STORAGE_ENDPOINT: ${{ secrets.STORAGE_ENDPOINT }}
+  #         STORAGE_STORAGE_KEY: ${{ secrets.STORAGE_KEY }}
+  #         STORAGE_STORAGE_REGION: ${{ secrets.STORAGE_REGION }}
+  #         STORAGE_STORAGE_SECRET: ${{ secrets.STORAGE_SECRET }}
+  #         RUST_BACKTRACE: 1
+  #         RUST_LOG: debug
+  #         STAGE: prod
+  #       run: |
+  #         npm install
+  #         npx serverless deploy --conceal
