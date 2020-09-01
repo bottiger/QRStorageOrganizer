@@ -90,7 +90,7 @@ jobs:
           project_id: qrst-287813
           image_name: server-end
           image_tag: ${{ steps.get_tag_name.outputs.GIT_TAG_NAME}}
-          dockerfile: ./Dockerfile.web
+          dockerfile: ./Dockerfile
 
 
   # deploy-lambda:
