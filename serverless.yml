@@ -12,7 +12,7 @@
 # Happy Coding!
 service: qrst-web # NOTE: update this with your service name
 provider:
-  name: qrst
+  name: aws
   runtime: rust
   #memorySize: 128
 # you can overwrite defaults here
