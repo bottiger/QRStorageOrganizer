@@ -12,7 +12,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_crud() {
-        /*
+        
         env_logger::init();
 
         init_env();
@@ -59,6 +59,6 @@ mod tests {
 
         assert_ne!(code_before.title, Some(after_title.clone()));
         assert_eq!(Some(after_title), code_after_get.title);
-        */
+        
     }
 }

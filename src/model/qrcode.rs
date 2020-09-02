@@ -1,5 +1,5 @@
-use crate::dynamodb::qruuid::slice_to_u256;
-use crate::dynamodb::qruuid::vec_to_u256;
+use crate::dynamodb::qruuid::slice_to_u192;
+use crate::dynamodb::qruuid::vec_to_u192;
 use crate::model::qrimage::QrImage;
 use crate::model::qrimage::QrImageHash;
 use crate::model::qritem::QrItem;
@@ -24,10 +24,11 @@ pub struct QrCode {
     pub items: Vec<QrItem>,
 }
 
+
 impl From<QrCodeDB> for QrCode {
     fn from(item: QrCodeDB) -> Self {
         QrCode {
-            group_id: vec_to_u256(&item.group_id).ok().unwrap(),
+            group_id: vec_to_u192(&item.group_id).ok().unwrap(),
             id: item.id,
             title: item.title,
             location: item.location,
@@ -55,7 +56,7 @@ pub struct QrCodeDB {
 impl From<QrCode> for QrCodeDB {
     fn from(item: QrCode) -> Self {
         QrCodeDB {
-            group_id: slice_to_u256(&item.group_id).ok().unwrap().to_vec(),
+            group_id: slice_to_u192(&item.group_id).ok().unwrap().to_vec(),
             id: item.id,
             title: item.title,
             location: item.location,
@@ -73,7 +74,7 @@ impl DbItem for QrCodeDB {
         }
     }
     fn get_partition_key(&self) -> DynamoPartitionKey {
-        vec_to_u256(&self.group_id).ok().unwrap() //self.group_id
+        vec_to_u192(&self.group_id).ok().unwrap() //self.group_id
     }
     fn get_sort_key(&self) -> DynamoSearchKey {
         self.id.to_owned()
