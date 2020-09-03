@@ -95,8 +95,8 @@ jobs:
           image_name: qrst-web
           image_tag: latest
           dockerfile: ./Dockerfile
-      - id: deploy
-        uses: GoogleCloudPlatform/github-actions/deploy-appengine@master
+      - uses: GoogleCloudPlatform/github-actions/deploy-appengine@master
+        id: deploy
         with:
           image: gcr.io/qrst-287813/qrst-web:latest
           service: qrst-web
