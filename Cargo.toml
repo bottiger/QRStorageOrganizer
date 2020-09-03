@@ -65,6 +65,7 @@ uuid = { version = "0.8", features = ["serde", "v5"] }
 base64 = "0.12"
 base-62 = "0.1.1"
 harsh = "0.1.6"
+vartyint = "0.1.0"
 
 sha3 = "0.8.2"
 bytes = "0.4.12"

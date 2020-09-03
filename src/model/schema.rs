@@ -1,7 +1,8 @@
 #[cfg(feature = "default")]
 use rusoto_core_default::Region;
 
-use crate::dynamodb::qruuid::parse_qr_string_val;
+use crate::dynamodb::qruuid::QrParsingError;
+use crate::dynamodb::qruuid::parse_qr_val;
 use std::num::ParseIntError;
 use base64::DecodeError;
 use std::str::FromStr;
@@ -20,17 +21,23 @@ lazy_static! {
     pub static ref SORT_KEY_GROUP_VAL: &'static u64 = &0;
 }
 
+
+
 #[allow(non_camel_case_types)]
-pub type u256 = [u8; 32];
+pub type u128 = [u8; 12];
+#[allow(non_camel_case_types)]
+pub type u128DB = Vec<u8>;
 #[allow(non_camel_case_types)]
 pub type u192 = [u8; 24];
 #[allow(non_camel_case_types)]
-pub type u256DB = Vec<u8>;
-#[allow(non_camel_case_types)]
 pub type u192DB = Vec<u8>;
+#[allow(non_camel_case_types)]
+pub type u256 = [u8; 32];
+#[allow(non_camel_case_types)]
+pub type u256DB = Vec<u8>;
 
-pub type DynamoPartitionKeyDB = u192DB;
-pub type DynamoPartitionKey = u192;
+pub type DynamoPartitionKeyDB = u128DB;
+pub type DynamoPartitionKey = u128;
 pub type DynamoSearchKey = u64;
 #[derive(Serialize, Deserialize)]
 pub struct DynamoPrimaryKey {
@@ -56,28 +63,11 @@ impl From<DecodeError> for KeyParseError {
 }
 
 impl FromStr for DynamoPrimaryKey {
-    type Err = base_62::base62::Error;
+    type Err = QrParsingError;
 
     fn from_str(url_str: &str) -> Result<Self, Self::Err> {
     
-        parse_qr_string_val(url_str)
-        /*
-        let parts: Vec<&str> = url_str.split('-').collect();
-        let byte_vec = base64::decode(parts[0])?;
-
-        let p: DynamoPartitionKey = match vec_to_u192(&byte_vec) {
-            Ok(ba) => ba,
-            Err(_o) => {
-                let sv = base64::decode(parts[0]);
-                println!("input: {:?} byte: {:?} length: {:?}", sv, parts[0], parts[0].len());
-                return Err(KeyParseError::ParseStringError(DecodeError::InvalidLength))
-            },
-        };
-
-        let s: DynamoSearchKey = u64::from_str(parts[1])?;
-
-        Ok(DynamoPrimaryKey { partition_key: p, sort_key: s })
-        */
+        parse_qr_val(url_str.to_string())
     }
 }
 

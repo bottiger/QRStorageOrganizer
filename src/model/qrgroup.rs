@@ -1,3 +1,4 @@
+use crate::model::schema::slice_to_partition_key;
 use crate::dynamodb::qruuid::slice_to_u192;
 use crate::dynamodb::qruuid::vec_to_u192;
 use crate::dynamodb::qruuid::slice_to_u256;
@@ -28,7 +29,7 @@ pub struct QrGroup {
 impl From<QrGroupDB> for QrGroup {
     fn from(item: QrGroupDB) -> Self {
         QrGroup {
-            group_id: vec_to_u192(&item.group_id).ok().unwrap(),
+            group_id: slice_to_partition_key(&item.group_id).ok().unwrap(),
             id: item.id,
             qr_salt: vec_to_u256(&item.qr_salt).ok().unwrap(),
             qr_count: item.qr_count,
@@ -52,7 +53,7 @@ pub struct QrGroupDB {
 impl From<QrGroup> for QrGroupDB {
     fn from(item: QrGroup) -> Self {
         QrGroupDB {
-            group_id: slice_to_u192(&item.group_id).ok().unwrap().to_vec(),
+            group_id: slice_to_partition_key(&item.group_id).ok().unwrap().to_vec(),
             id: item.id,
             qr_salt: slice_to_u256(&item.qr_salt).ok().unwrap().to_vec(),
             qr_count: item.qr_count,
@@ -68,7 +69,7 @@ impl DbItem for QrGroupDB {
         }
     }
     fn get_partition_key(&self) -> DynamoPartitionKey {
-        vec_to_u192(&self.group_id).ok().unwrap() //self.group_id
+        slice_to_partition_key(&self.group_id).ok().unwrap() //self.group_id
     }
     fn get_sort_key(&self) -> DynamoSearchKey {
         self.id.to_owned()

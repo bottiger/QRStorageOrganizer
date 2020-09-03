@@ -29,7 +29,7 @@ impl Default for QrPdfLayout {
         	pdf_height: Mm(297.0),
         	pdf_margin_horizontal: Mm(5.0),
         	pdf_margin_vertical: Mm(5.0),
-        	num_qr_horizontal: 5,
+        	num_qr_horizontal: 6,
         	num_qr_vertical: 10,
         }
    }
