@@ -95,6 +95,13 @@ jobs:
           image_name: qrst-web
           image_tag: latest
           dockerfile: ./Dockerfile
+      - id: deploy
+        uses: GoogleCloudPlatform/github-actions/deploy-appengine@master
+        with:
+          image: gcr.io/qrst-287813/qrst-web:latest
+          service: qrst-web
+          credentials: ${{ secrets.gcp_credentials }}
+          region: eu-north-1
 
 
   # deploy-lambda:
