@@ -96,15 +96,22 @@ jobs:
           image_tag: latest
           dockerfile: ./Dockerfile
 
+      - uses: GoogleCloudPlatform/github-actions/deploy-cloudrun@master
+        id: deploy
+        with:
+          image: gcr.io/qrst-287813/qrst-web:latest
+          service: qrst-web
+          credentials:  ${{ secrets.GCLOUD_SERVICE_KEY }}
+          region: europe-north1
       # Setup gcloud CLI
-      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
-        with:
-          version: '270.0.0'
-          service_account_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
-      - name: Deploy to cloud run
-        uses: actions/gcloud/cli@master
-        with:
-          args: "components install beta --quiet gcloud beta run deploy qrst-web --image gcr.io/qrst-287813/qrst-web:latest --platform managed  --region eu-north1 --project=qrst-287813"
+      #- uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      #  with:
+      #    version: '270.0.0'
+      #    service_account_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
+      #- name: Deploy to cloud run
+      #  uses: actions/gcloud/cli@master
+      #  with:
+      #    args: "components install beta --quiet gcloud beta run deploy qrst-web --image gcr.io/qrst-287813/qrst-web:latest --platform managed  --region eu-north1 --project=qrst-287813"
       #- name: Deploy service to Cloud Run
       #  uses: stefda/action-cloud-run@v1.0
       #  with:
