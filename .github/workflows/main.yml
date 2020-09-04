@@ -96,11 +96,11 @@ jobs:
           image_tag: latest
           dockerfile: ./Dockerfile
 
-      - name: Authenticate with google cloud
-        uses: actions/gcloud/auth@master
-        env:
-          GCLOUD_PROJECT_ID: qrst-287813
-          GCLOUD_AUTH: ${{ secrets.GCLOUD_SERVICE_KEY }}
+      # Setup gcloud CLI
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: '270.0.0'
+          service_account_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
       - name: Deploy to cloud run
         uses: actions/gcloud/cli@master
         with:
