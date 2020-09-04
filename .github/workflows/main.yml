@@ -95,14 +95,25 @@ jobs:
           image_name: qrst-web
           image_tag: latest
           dockerfile: ./Dockerfile
-      - name: Deploy service to Cloud Run
-        uses: stefda/action-cloud-run@v1.0
+
+      - name: Authenticate with google cloud
+        uses: actions/gcloud/auth@master
+        env:
+          GCLOUD_PROJECT_ID: qrst-287813
+          GCLOUD_AUTH: ${{ secrets.GCLOUD_SERVICE_KEY }}
+      - name: Deploy to cloud run
+        uses: actions/gcloud/cli@master
         with:
-          image: gcr.io/qrst-287813/qrst-web:latest
-          service: qrst-web
-          project: qrst-287813
-          region: europe-north1
-          service key: ${{ secrets.GCLOUD_SERVICE_KEY }}
+          args: "components install beta --quiet gcloud beta run deploy qrst-web --image gcr.io/qrst-287813/qrst-web:latest --platform managed  --region eu-north1 --project=qrst-287813"
+      #- name: Deploy service to Cloud Run
+      #  uses: stefda/action-cloud-run@v1.0
+      #  with:
+      #    image: gcr.io/qrst-287813/qrst-web:latest
+      #    service: qrst-web
+      #    project: qrst-287813
+      #    region: europe-north1
+      #    service key: ${{ secrets.GCLOUD_SERVICE_KEY }}
+      
       #- uses: GoogleCloudPlatform/github-actions/deploy-appengine@master
       #  id: deploy
       #  with:
