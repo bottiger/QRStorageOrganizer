@@ -36,6 +36,7 @@ pub type u256 = [u8; 32];
 #[allow(non_camel_case_types)]
 pub type u256DB = Vec<u8>;
 
+pub type QrVersion = u8;
 pub type DynamoPartitionKeyDB = u128DB;
 pub type DynamoPartitionKey = u128;
 pub type DynamoSearchKey = u64;

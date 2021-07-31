@@ -31,7 +31,12 @@ lazy_static! {
 
 /// Each QR code contains 256 bits
 /// The first 192 bits are the group ID
-/// The next 64 bits are for the QR code
+/// The next 64 bits are for the QR code 
+
+/// Each QR code contains 256 bits
+/// The first 8 bits are version number
+/// The next 192 bits are the group ID
+/// The next 56 bits are for the QR code
 
 pub fn to_base64(bytes: &Bytes) -> String {
     encode(&bytes)

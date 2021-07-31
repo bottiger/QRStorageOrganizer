@@ -5,6 +5,7 @@ use crate::model::qrimage::QrImage;
 use crate::model::qrimage::QrImageHash;
 use crate::model::qritem::QrItem;
 use crate::model::schema::DbItem;
+use crate::model::schema::QrVersion;
 use crate::model::schema::DynamoDbType;
 use crate::model::schema::DynamoPartitionKey;
 use crate::model::schema::DynamoPartitionKeyDB;
@@ -15,14 +16,18 @@ use dynomite::AttributeValue;
 use dynomite::Item;
 use std::collections::hash_map::HashMap;
 
+const VERSION: u8 = 1;
+
 #[derive(Default, Debug, Clone)]
 pub struct QrCode {
+	pub version: QrVersion,
     pub group_id: DynamoPartitionKey,
     pub id: DynamoSearchKey,
     pub title: Option<String>,
     pub location: Option<String>,
     pub images: Vec<QrImage>,
     pub items: Vec<QrItem>,
+	pub content: Option<String>,
 }
 
 
@@ -35,6 +40,7 @@ impl From<QrCodeDB> for QrCode {
             location: item.location,
             items: item.items,
             images: Vec::new(),
+			content: item.content,
         }
     }
 }
@@ -52,6 +58,7 @@ pub struct QrCodeDB {
     pub location: Option<String>,
     pub items: Vec<QrItem>,
     pub image_hashes: Vec<QrImageHash>,
+	pub content: Option<String>,
 }
 
 impl From<QrCode> for QrCodeDB {
@@ -63,6 +70,7 @@ impl From<QrCode> for QrCodeDB {
             location: item.location,
             items: item.items,
             image_hashes: item.images.into_iter().map(|i| i.hash32).collect(),
+			content: item.content,
         }
     }
 }

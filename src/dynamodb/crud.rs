@@ -11,6 +11,9 @@ use dynomite::{
 };
 use rusoto_dynamodb::ListTablesInput;
 
+use crate::dynamodb::RusotoError;
+//use rusoto_core::RusotoError;
+
 use dynomite::retry::Policy;
 
 #[cfg(feature = "default")]
@@ -18,9 +21,9 @@ use rusoto_core_default::Region;
 #[cfg(feature = "rustls")]
 use rusoto_core_rustls::Region;
 
-use rusoto_core::region::Region;
-use rusoto_core::RusotoError;
-//use rusoto_core::RusotoFuture;
+//use rusoto_core::RusotoError;
+//use rusoto_signature::region::Region;
+use rusoto_core::Region;
 
 use std::collections::HashMap;
 use std::rc::Rc;
