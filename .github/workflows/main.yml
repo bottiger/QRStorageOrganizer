@@ -12,7 +12,7 @@ jobs:
         name: Checkout Source Code
 
       - name: Building and packaging AWS Lambda functions
-        uses: miere/rust-aws-lambda@1.51.0
+        uses: miere/rust-aws-lambda@
         id: rust-aws-lambda
         # Only required if your source is not in the root folder
         # By default, source-dir points to '.'
