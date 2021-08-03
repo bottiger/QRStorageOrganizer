@@ -9,6 +9,7 @@ use crate::model::qrgroup::QrGroupDB;
 use crate::dynamodb::qruuid::gen_qr_scan_val;
 use crate::im_encoder::to_img;
 use crate::model::qrcode::QrCode;
+use crate::model::qrcode::VERSION;
 use printpdf::*;
 use std::fs::File;
 use std::io::BufWriter;
@@ -50,6 +51,7 @@ pub async fn new_codes_pdf(group: &mut QrGroup, amount: usize, layout: QrPdfLayo
             images: Vec::new(),
             items: Vec::new(),
 			content: None,
+            version: VERSION,
         };
 
 		new_codes.push(new_code);

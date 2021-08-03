@@ -64,6 +64,7 @@ pub fn get_fixture_code() -> Result<QrCode, Box<dyn Error>> {
         images: vec![],
         items: vec![],
 		content: Some("This is a test string, again".to_string()),
+        version: 1,
     };
 
     Ok(qrcode_1)
@@ -105,6 +106,7 @@ pub fn get_fixture() -> Result<QrGroup, Box<dyn Error>> {
         images: vec![],
         items: vec![qr_item_1, qr_item_2, qr_item_3],
 		content: Some("This is a test string".to_string()),
+        version: 1,
     };
     let qrcode_2 = QrCode {
         group_id: gid,
@@ -114,6 +116,7 @@ pub fn get_fixture() -> Result<QrGroup, Box<dyn Error>> {
         images: vec![],
         items: vec![],
 		content: Some("This is a test string, again".to_string()),
+        version: 1,
     };
     let qrcode_3 = QrCode {
         group_id: gid,
@@ -123,6 +126,7 @@ pub fn get_fixture() -> Result<QrGroup, Box<dyn Error>> {
         images: vec![get_fixture_image_rgb(), get_fixture_image_rgb2()],
         items: vec![qr_item_4],
 		content: None,
+        version: 1,
     };
     let qrcode_4 = QrCode {
         group_id: gid,
@@ -132,6 +136,7 @@ pub fn get_fixture() -> Result<QrGroup, Box<dyn Error>> {
         images: vec![get_fixture_image_rgb2()],
         items: vec![qr_item_5],
 		content: None,
+        version: 1,
     };
 
     let qr_codes = vec![qrcode_1, qrcode_2, qrcode_3, qrcode_4];

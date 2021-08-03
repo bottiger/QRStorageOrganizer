@@ -16,7 +16,7 @@ use dynomite::AttributeValue;
 use dynomite::Item;
 use std::collections::hash_map::HashMap;
 
-const VERSION: u8 = 1;
+pub const VERSION: QrVersion = 1;
 
 #[derive(Default, Debug, Clone)]
 pub struct QrCode {
@@ -41,6 +41,7 @@ impl From<QrCodeDB> for QrCode {
             items: item.items,
             images: Vec::new(),
 			content: item.content,
+            version: VERSION,
         }
     }
 }
@@ -59,6 +60,7 @@ pub struct QrCodeDB {
     pub items: Vec<QrItem>,
     pub image_hashes: Vec<QrImageHash>,
 	pub content: Option<String>,
+    pub version: QrVersion,
 }
 
 impl From<QrCode> for QrCodeDB {
@@ -71,6 +73,7 @@ impl From<QrCode> for QrCodeDB {
             items: item.items,
             image_hashes: item.images.into_iter().map(|i| i.hash32).collect(),
 			content: item.content,
+            version: item.version,
         }
     }
 }
