@@ -25,5 +25,6 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: "{{process.env.GITHUB_RUN_ID}}"
-          path: "/github/workspace/target/lambda/*.zip"
+          path: "source/target/**.zip"
+          #path: "/github/workspace/target/lambda/*.zip"
           #path: "source/target/lambda/*.zip"
