@@ -60,7 +60,6 @@ pub struct QrCodeDB {
     pub items: Vec<QrItem>,
     pub image_hashes: Vec<QrImageHash>,
 	pub content: Option<String>,
-    pub version: QrVersion,
 }
 
 impl From<QrCode> for QrCodeDB {
@@ -73,7 +72,6 @@ impl From<QrCode> for QrCodeDB {
             items: item.items,
             image_hashes: item.images.into_iter().map(|i| i.hash32).collect(),
 			content: item.content,
-            version: item.version,
         }
     }
 }

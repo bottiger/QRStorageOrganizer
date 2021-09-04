@@ -37,13 +37,13 @@ path = "src/bin/lambda.rs"
 [dependencies]
 lazy_static = "1.4.0"
 dotenv = "0.15"
-rand  = "0.7"
+rand  = "0.8"
 chrono = "0.4"
 clap = "2.33"
-config = "0.10.1"
+config = "0.11"
 
 qrcode = "0.12"
-image = "0.23.9"
+image = "0.23.14"
 #bardecoder = "0.2"
 fxhash = "0.2.1"
 printpdf = "0.3.2"
@@ -65,13 +65,14 @@ rusoto_credential = "0.45"
 dynomite = "0.10.0"
 dynomite-derive = "0.10.0"
 futures = "0.3"
-tokio = "1.9"
+tokio = "0.2"
 log = "0.4"
 uuid = { version = "0.8", features = ["serde", "v5"] }
 
 base64 = "0.12"
 base-62 = "0.1.1"
 harsh = "0.1.6"
+
 vartyint = "0.1.0"
 
 sha3 = "0.8.2"

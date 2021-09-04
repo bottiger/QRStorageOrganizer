@@ -21,6 +21,9 @@ mod tests {
         println!("Starting test");
 
         let f = get_fixture().unwrap();
+        //assert!(insert_group(&f).await.is_ok());
+
+        println!("{:?}", insert_group(&f).await.err());
         assert!(insert_group(&f).await.is_ok());
 
         let group_before = get_group(&f.group_id).await.unwrap();

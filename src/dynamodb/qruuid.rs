@@ -7,6 +7,7 @@ use crate::model::schema::u128;
 use crate::model::schema::u192;
 use base_62::base62::Error;
 
+use crate::model::schema::QrVersion;
 use crate::model::schema::DynamoPrimaryKey;
 use crate::model::qrcode::QrCode;
 use crate::model::schema::DynamoSearchKey;
@@ -119,21 +120,26 @@ pub fn gen_qr_scan_val(code: &QrCode) -> String {
 }
 
 pub fn gen_encoded_string(code: &QrCode) -> String {
+    let mut bytes0 : Vec<u8> = Vec::new();
+    bytes0.push(code.version);
+    
     let mut bytes1 : Vec<u8> = code.group_id.into();
-    // let mut bytes2 : Vec<u8> = u64::to_ne_bytes(code.id).to_vec();
     
     let mut bytes2 = Vec::new();
     vartyint::write_u64(code.id, &mut bytes2);
     
-    bytes1.append(&mut bytes2);
+    bytes0.append(&mut bytes1);
+    bytes0.append(&mut bytes2);
 
 
-    base_62::encode(&bytes1)
+    base_62::encode(&bytes0)
 }
 
 #[derive(Debug, Clone)]
 pub struct QrParsingError;
 
+/*
+// working
 pub fn parse_qr_val(val: String) -> Result<DynamoPrimaryKey, QrParsingError> {
     let bytes: Vec<u8> = base_62::decode(&val).map_err(|_e| QrParsingError)?;
 
@@ -156,6 +162,65 @@ pub fn parse_qr_val(val: String) -> Result<DynamoPrimaryKey, QrParsingError> {
     let s2 = qrid_bytes.try_into().map_err(|_e| QrParsingError)?;
     let s = u64::from_ne_bytes(s2);
     */
+
+    let qrid_bytes = bytes.get(first_byte..num_bytes).ok_or(QrParsingError)?;
+    let (s, _qrid_bytes) = vartyint::read_u64(&qrid_bytes).unwrap();
+
+    Ok(DynamoPrimaryKey { partition_key: p, sort_key: s })
+}
+*/
+pub fn parse_qr_val(val: String) -> Result<DynamoPrimaryKey, QrParsingError> {
+    let bytes: Vec<u8> = base_62::decode(&val).map_err(|_e| QrParsingError)?;
+
+    let expected_bytesize = size_of::<QrVersion>() + size_of::<DynamoPartitionKey>() + size_of::<DynamoSearchKey>();
+    log::debug!("Byte length: {:?}. Expect: {}", bytes.len(), expected_bytesize);
+
+    /*
+    let mut v: [u8; size_of::<QrVersion>()] = Default::default();
+    let part_key_bytes = bytes.get(0..size_of::<QrVersion>()).ok_or(QrParsingError)?;
+    let sl: [u8; size_of::<QrVersion>()] = part_key_bytes.try_into().map_err(|_e| QrParsingError)?;
+    v.copy_from_slice(&sl);
+
+
+    let (version, _rest) = vartyint::read_u8(&v).unwrap();
+    */
+
+    let (version, rest) = vartyint::read_u8(&bytes).unwrap();
+
+    match version {
+        1 => parse_qr_val_v1(rest.to_vec()),
+        _ => Err(QrParsingError),
+    }
+
+/*    
+    let first_byte = size_of::<DynamoPartitionKey>();
+    let num_bytes = bytes.len();
+    let _qrid_length = num_bytes - first_byte;
+
+
+    let qrid_bytes = bytes.get(first_byte..num_bytes).ok_or(QrParsingError)?;
+    let (s, _qrid_bytes) = vartyint::read_u64(&qrid_bytes).unwrap();
+
+    Ok(DynamoPrimaryKey { partition_key: p, sort_key: s })
+    */
+}
+
+
+pub fn parse_qr_val_v1(bytes: Vec<u8>) -> Result<DynamoPrimaryKey, QrParsingError> {
+
+    let expected_bytesize = size_of::<DynamoPartitionKey>() + size_of::<DynamoSearchKey>();
+    log::debug!("Byte length: {:?}. Expect: {}", bytes.len(), expected_bytesize);
+
+    let mut p: [u8; size_of::<DynamoPartitionKey>()] = Default::default();
+    let part_key_bytes = bytes.get(0..size_of::<DynamoPartitionKey>()).ok_or(QrParsingError)?;
+    let sl: [u8; size_of::<DynamoPartitionKey>()] = part_key_bytes.try_into().map_err(|_e| QrParsingError)?;
+    p.copy_from_slice(&sl);
+
+
+    
+    let first_byte = size_of::<DynamoPartitionKey>();
+    let num_bytes = bytes.len();
+    let _qrid_length = num_bytes - first_byte;
 
     let qrid_bytes = bytes.get(first_byte..num_bytes).ok_or(QrParsingError)?;
     let (s, _qrid_bytes) = vartyint::read_u64(&qrid_bytes).unwrap();
