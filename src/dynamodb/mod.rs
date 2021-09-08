@@ -45,11 +45,11 @@ pub async fn get_group(pk: &DynamoPartitionKey) -> Result<QrGroup, Box<dyn error
     let mut codes: Vec<QrCode> = Vec::new();
 
     for item in it.iter() {
-        match QrGroupDB::from_attrs(item.clone()) {
+        match QrGroupDB::from_attrs(&mut item.clone()) {
             Ok(t) => {
                 group = QrGroup::from(t);
             }
-            Err(_e) => match QrCodeDB::from_attrs(item.clone()) {
+            Err(_e) => match QrCodeDB::from_attrs(&mut item.clone()) {
                 Ok(t) => {
                     codes.push(QrCode::from(t));
                 }

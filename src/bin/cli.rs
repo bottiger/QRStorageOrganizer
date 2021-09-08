@@ -32,6 +32,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let fixture = get_fixture();
     log::debug!("Fixture: {:?}", fixture);
 
+    /*
     let _reginsert = match fixture {
         Ok(mut f) => {
             f.qrcodes[0].title = Some("Pest".to_string());
@@ -53,6 +54,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         }
         Err(e) => println!("Error: {}", e),
     };
+    */
 
     Ok(())
 }

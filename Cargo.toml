@@ -56,16 +56,18 @@ rocket = "0.5.0-rc.1"
 
 simple-error = "0.2.2"
 
-rusoto_dynamodb = "0.45"
-rusoto_core = "0.45"
-rusoto_s3 = "0.45"
-rusoto_credential = "0.45"
-#rusoto_signature = "0.46"
+rusoto_dynamodb = "0.46"
+rusoto_core = "0.46"
+rusoto_s3 = "0.46"
+rusoto_credential = "0.46"
 
-dynomite = "0.10.0"
-dynomite-derive = "0.10.0"
+#dynomite = "0.10.0"
+#dynomite-derive = "0.10.0"
+dynomite = { git = "https://github.com/softprops/dynomite", branch = "master" }
+dynomite-derive = { git = "https://github.com/softprops/dynomite", branch = "master" }
+
 futures = "0.3"
-tokio = "0.2"
+tokio = "1.0"
 log = "0.4"
 uuid = { version = "0.8", features = ["serde", "v5"] }
 
