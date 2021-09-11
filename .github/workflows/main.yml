@@ -26,7 +26,9 @@ jobs:
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: ${{ secrets.AWS_REGION }}
           function_name: qrwiki
-          source: "target/lambda/bootstrap.zip"
+          zip_file: target/lambda/bootstrap.zip
+          #source: "target/lambda/bootstrap.zip"
+
 
       # Do something with the generated zip files
       # They will be generated at the target folder of your project.
