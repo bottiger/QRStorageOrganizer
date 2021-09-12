@@ -25,10 +25,13 @@ jobs:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: ${{ secrets.AWS_REGION }}
-          function_name: qrwiki
-          zip_file: target/lambda/bootstrap.zip
+          function_name: arn:aws:lambda:eu-north-1:782562066078:function:qrwiki 
+          zip_file: target/lambda/bootstrap2.zip
+          runtime: provided.al2
+          memory_size: 64
           dry_run: true
           #source: "target/lambda/bootstrap.zip"
+          #qrwiki
 
 
       # Do something with the generated zip files
