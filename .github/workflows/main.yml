@@ -28,4 +28,4 @@ jobs:
 
       - name: Upload the zip-file to aws lambda
         run: |
-          aws lambda update-function-code --function-name qrwiki --zip-file fileb://bootstrap.zip
+          aws lambda update-function-code --function-name qrwiki --zip-file fileb://target/lambda/bootstrap.zip
