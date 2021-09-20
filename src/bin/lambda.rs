@@ -11,7 +11,7 @@ async fn main() -> Result<(), Error> {
 async fn func(event: Value, _: Context) -> Result<Value, Error> {
     let first_name = event["firstName"].as_str().unwrap_or("world");
 
-    Ok(json!({ "message": format!("2Can do: Hello, {}!", first_name) }))
+    Ok(json!({ "message": format!("Foobar: Can do: Hello, {}!", first_name) }))
 }
 /*
 use std::error::Error;
