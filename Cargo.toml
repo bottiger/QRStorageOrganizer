@@ -52,7 +52,7 @@ printpdf = "0.3.2"
 #actix-rt = "1.0.0"
 env_logger = "0.7.1"
 
-lambda-web = { version = "0.1.6", features=["rocket"] }
+lambda-web = { version = "0.1.6", features=["rocket05"] }
 rocket = "0.5.0-rc.1"
 
 simple-error = "0.2.2"
