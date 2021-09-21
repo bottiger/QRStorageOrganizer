@@ -24,6 +24,16 @@ async fn hello(
 use rocket::{self, get, routes};
 use lambda_web::{is_running_on_lambda, launch_rocket_on_lambda, LambdaError};
 
+#[get("/")]
+fn index() -> &'static str {
+    "Hi to you"
+}
+
+#[get("/")]
+fn ttt() -> &'static str {
+    "Hello, world!"
+}
+
 #[get("/hello/<name>/<age>")]
 fn hello(name: &str, age: u8) -> String {
     format!("Hello, {} year old named {}!", age, name)
@@ -31,7 +41,10 @@ fn hello(name: &str, age: u8) -> String {
 
 #[rocket::main]
 async fn main() -> Result<(), LambdaError> {
-    let rocket = rocket::build().mount("/", routes![hello]);
+    let rocket = rocket::build()
+        .mount("/t", routes![hello])
+        .mount("/hi", routes![index])
+        .mount("/", routes![ttt]);
     if is_running_on_lambda() {
         // Launch on AWS Lambda
         launch_rocket_on_lambda(rocket).await?;
