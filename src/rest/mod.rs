@@ -1,3 +1,4 @@
+/*
 extern crate qrcode;
 
 use crate::dynamodb::qruuid::parse_qr_val;
@@ -20,3 +21,4 @@ pub async fn index2(info: web::Path<String>, _req: HttpRequest) -> impl Responde
 		Err(_e) => HttpResponse::BadRequest().body("Unable to parse input")
 	}
 }
+*/
