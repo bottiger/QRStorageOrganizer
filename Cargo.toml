@@ -14,9 +14,9 @@ autobins = false
 name = "cli"
 path = "src/bin/cli.rs"
 
-[[bin]]
-name = "rest"
-path = "src/bin/rest.rs"
+#[[bin]]
+#name = "rest"
+#path = "src/bin/rest.rs"
 
 [[bin]]
 name = "rocket"
