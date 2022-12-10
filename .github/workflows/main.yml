@@ -25,7 +25,16 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
+          aws-tmp-bucket: qrwiki-deploy
+          aws-stack-name: qrwiki
 
       - name: Upload the zip-file to aws lambda
         run: |
           aws lambda update-function-code --function-name qrwiki --zip-file fileb://target/lambda/bootstrap.zip
+
+      - name: Deploy Amazon Lambda
+        id: cloudformation-deploy
+        uses: aws-actions/aws-cloudformation-github-deploy@master
+        with:
+          name: Test-deployment
+          template: sam.yaml

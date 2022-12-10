@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Example Rocket Lamb API
+Globals:
+  Api:
+    BinaryMediaTypes:
+    - '*/*'
+Resources:
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://qrwiki-deploy/ec59daf3d4fb3898c1d8bc02ad5946a4
+      Handler: DUMMY
+      Runtime: provided
+      MemorySize: 128
+      Events:
+        Web:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+        WebRoot:
+          Type: Api
+          Properties:
+            Path: /
+            Method: ANY
+Outputs:
+  ApiUrl:
+    Description: API Gateway endpoint URL
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/
