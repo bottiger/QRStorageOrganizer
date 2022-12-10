@@ -68,7 +68,7 @@ dynomite = { git = "https://github.com/softprops/dynomite", rev = "1ef5327" }
 dynomite-derive = { git = "https://github.com/softprops/dynomite", rev = "1ef5327" }
 
 futures = "0.3"
-tokio = "1.0"
+tokio = "1.13"
 log = "0.4"
 uuid = { version = "0.8", features = ["serde", "v5"] }
 
