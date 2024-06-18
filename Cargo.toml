@@ -39,55 +39,44 @@ lazy_static = "1.4.0"
 dotenv = "0.15"
 rand  = "0.8"
 chrono = "0.4"
-clap = "2.33"
-config = "0.11"
+clap = "4.5.7"
+config = "0.14"
 
-qrcode = "0.12"
-image = "0.23.14"
+qrcode = "0.14"
+image = "0.25.1"
 #bardecoder = "0.2"
 fxhash = "0.2.1"
-printpdf = "0.3.2"
+printpdf = "0.7"
 
-#actix-web = "2.0"
-#actix-rt = "1.0.0"
-env_logger = "0.7.1"
+env_logger = "0.11.3"
 
-lambda-web = { version = "0.1.6", features=["rocket05"] }
-rocket = "0.5.0-rc.1"
+#lambda-web = { version = "0.1.6", features=["rocket05"] }
+#rocket = "0.5.0-rc.1"
 
 simple-error = "0.2.2"
 
-rusoto_dynamodb = "0.46"
-rusoto_core = "0.46"
-rusoto_s3 = "0.46"
-rusoto_credential = "0.46"
+#rusoto_dynamodb = "0.46"
+#rusoto_core = "0.46"
+#rusoto_s3 = "0.46"
+#rusoto_credential = "0.46"
 
-#dynomite = "0.10.0"
-#dynomite-derive = "0.10.0"
-dynomite = { git = "https://github.com/softprops/dynomite", rev = "1ef5327" }
-dynomite-derive = { git = "https://github.com/softprops/dynomite", rev = "1ef5327" }
+futures = "0.3.30"
+tokio = "1.38"
+log = "0.4.21"
+uuid = { version = "1.8", features = ["serde", "v5"] }
 
-futures = "0.3"
-tokio = "1.0"
-log = "0.4"
-uuid = { version = "0.8", features = ["serde", "v5"] }
-
-base64 = "0.12"
+base64 = "0.22.1"
 base-62 = "0.1.1"
-harsh = "0.1.6"
+harsh = "0.2.2"
 
-vartyint = "0.1.0"
+vartyint = "0.3"
 
-sha3 = "0.8.2"
-bytes = "0.4.12"
+sha3 = "0.10.8"
+bytes = "1.6"
 
-# lambda
-lambda_runtime = "0.4.1"
-lambda_http = "0.4.1" # { git = "https://github.com/awslabs/aws-lambda-rust-runtime/", branch = "master"} #lambda_http = "0.1.1" #{ git = "https://github.com/awslabs/aws-lambda-rust-runtime/", branch = "master"}
+serde = "1.0.203"
+serde_json = "1.0.117"
+serde_derive = "1.0.203"
+simple_logger = "5.0.0"
 
-serde = "1.0.115"
-serde_json = "1.0.57"
-serde_derive = "1.0.115"
-simple_logger = "1.7.0"
-
-openssl = { version = "=0.10.33", features = ["vendored"] }
+openssl = { version = "0.10.64", features = ["vendored"] }
