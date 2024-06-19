@@ -1,8 +1,4 @@
-use crate::model::schema::slice_to_partition_key;
-use crate::dynamodb::qruuid::slice_to_u192;
-use crate::dynamodb::qruuid::vec_to_u192;
-use crate::dynamodb::qruuid::slice_to_u256;
-use crate::dynamodb::qruuid::vec_to_u256;
+use crate::model::qruuid::{slice_to_u256, vec_to_u256}; // Add vec_to_u256 import
 use crate::model::qrcode::QrCode;
 use crate::model::schema::u256;
 use crate::model::schema::u256DB;
@@ -12,9 +8,7 @@ use crate::model::schema::DynamoPartitionKey;
 use crate::model::schema::DynamoPartitionKeyDB;
 use crate::model::schema::DynamoPrimaryKey;
 use crate::model::schema::DynamoSearchKey;
-use dynomite::Attribute;
-use dynomite::Item;
-use rusoto_dynamodb::AttributeValue;
+use crate::model::schema::slice_to_partition_key;
 use std::collections::HashMap;
 
 #[derive(Default, Debug, Clone)]
@@ -38,13 +32,9 @@ impl From<QrGroupDB> for QrGroup {
     }
 }
 
-#[derive(Item, Default, PartialEq, Debug, Clone)]
+#[derive(Default, PartialEq, Debug, Clone)]
 pub struct QrGroupDB {
-    #[dynomite(partition_key)]
-    #[dynomite(rename = "qr_group_id")] //remote name
     pub group_id: DynamoPartitionKeyDB,
-    #[dynomite(sort_key)]
-    #[dynomite(rename = "qr_val")] //remote name
     pub id: DynamoSearchKey,
     pub qr_salt: u256DB,
     pub qr_count: u32,
@@ -79,6 +69,7 @@ impl DbItem for QrGroupDB {
         DynamoDbType::QrGroup
     }
 
+    /*
     fn get_attribute_value_map(&self) -> HashMap<String, AttributeValue> {
         let clone = self.clone();
         let mut map: HashMap<String, AttributeValue> = clone.into();
@@ -104,4 +95,5 @@ impl DbItem for QrGroupDB {
 
         (attr_vals, update_expr)
     }
+    */
 }

@@ -1,15 +1,9 @@
 #[cfg(feature = "default")]
 use rusoto_core_default::Region;
 
-use crate::dynamodb::qruuid::QrParsingError;
-use crate::dynamodb::qruuid::parse_qr_val;
-use std::num::ParseIntError;
+use std::{array::TryFromSliceError, num::ParseIntError};
 use base64::DecodeError;
 use std::str::FromStr;
-use dynomite::AttributeError;
-use dynomite::AttributeValue;
-#[cfg(feature = "rustls")]
-use rusoto_core_rustls::Region;
 use std::collections::HashMap;
 use std::convert::TryInto;
 use serde::{Deserialize, Serialize};
@@ -63,21 +57,14 @@ impl From<DecodeError> for KeyParseError {
     }
 }
 
-impl FromStr for DynamoPrimaryKey {
-    type Err = QrParsingError;
 
-    fn from_str(url_str: &str) -> Result<Self, Self::Err> {
-    
-        parse_qr_val(url_str.to_string())
-    }
-}
-
-pub fn slice_to_partition_key(s: &[u8]) -> Result<DynamoPartitionKey, AttributeError> {
+pub fn slice_to_partition_key(s: &[u8]) -> Result<DynamoPartitionKey, TryFromSliceError> {
     match s.try_into() {
         Ok(v) => Ok(v),
-        Err(_e) => Err(AttributeError::InvalidFormat),
+        Err(_e) => Err(_e),
     }
 }
+    
 
 pub enum DynamoDbType {
     QrGroup,
@@ -90,6 +77,6 @@ pub trait DbItem {
     fn get_partition_key(&self) -> DynamoPartitionKey;
     fn get_sort_key(&self) -> DynamoSearchKey;
     fn get_type(&self) -> DynamoDbType;
-    fn get_attribute_value_map(&self) -> HashMap<String, AttributeValue>;
-    fn get_update_expr(&self) -> (Option<HashMap<String, AttributeValue>>, Option<String>);
+    //fn get_attribute_value_map(&self) -> HashMap<String, AttributeValue>;
+    //fn get_update_expr(&self) -> (Option<HashMap<String, AttributeValue>>, Option<String>);
 }

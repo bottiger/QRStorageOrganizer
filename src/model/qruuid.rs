@@ -1,11 +1,13 @@
 extern crate base64;
 
-use crate::model::schema::slice_to_partition_key;
 use std::mem::size_of;
 use crate::model::schema::DynamoPartitionKey;
 use crate::model::schema::u128;
 use crate::model::schema::u192;
+use crate::model::schema::slice_to_partition_key;
 use base_62::base62::Error;
+use harsh::BuildError;
+use harsh::Harsh;
 
 use crate::model::schema::QrVersion;
 use crate::model::schema::DynamoPrimaryKey;
@@ -86,8 +88,8 @@ pub fn gen_uuid_str(name: &str) -> DynamoPartitionKey {
 
 pub fn gen_uuid(name: &[u8]) -> DynamoPartitionKey {
     let mut hasher = Sha3_256::new();
-    hasher.input(name);
-    let result = hasher.result();
+    hasher.update(name);
+    let result = hasher.finalize();
 
     let slice = result.as_slice();
     info!("Hash result {:?}", slice);
@@ -101,13 +103,13 @@ pub fn gen_uuid(name: &[u8]) -> DynamoPartitionKey {
     }
 }
 
-pub fn gen_qr_id(group: &QrGroup, val: DynamoSearchKey) -> harsh::Result<String> {
+pub fn gen_qr_id(group: &QrGroup, val: DynamoSearchKey) -> Result<String, BuildError> {
     let harsh = HarshBuilder::new()
         .salt(group.qr_salt.to_owned().to_vec())
-        .init()?;
+        .build().unwrap();
 
     let valvec = vec![val];
-    let qr_id = harsh.encode(&valvec).unwrap();
+    let qr_id = harsh.encode(&valvec);
     info!("Calculating ID. from {:?} => {:?}", val, qr_id);
     Ok(qr_id)
 }

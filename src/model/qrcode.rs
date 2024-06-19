@@ -1,6 +1,6 @@
 use crate::model::schema::slice_to_partition_key;
-use crate::dynamodb::qruuid::slice_to_u192;
-use crate::dynamodb::qruuid::vec_to_u192;
+use crate::model::qruuid::slice_to_u192;
+use crate::model::qruuid::vec_to_u192;
 use crate::model::qrimage::QrImage;
 use crate::model::qrimage::QrImageHash;
 use crate::model::qritem::QrItem;
@@ -11,9 +11,6 @@ use crate::model::schema::DynamoPartitionKey;
 use crate::model::schema::DynamoPartitionKeyDB;
 use crate::model::schema::DynamoPrimaryKey;
 use crate::model::schema::DynamoSearchKey;
-use dynomite::Attribute;
-use dynomite::AttributeValue;
-use dynomite::Item;
 use std::collections::hash_map::HashMap;
 
 pub const VERSION: QrVersion = 1;
@@ -46,16 +43,11 @@ impl From<QrCodeDB> for QrCode {
     }
 }
 
-#[derive(Item, Default, PartialEq, Debug, Clone)]
+#[derive(Default, PartialEq, Debug, Clone)]
 pub struct QrCodeDB {
-    #[dynomite(partition_key)]
-    #[dynomite(rename = "qr_group_id")] //remote name
     pub group_id: DynamoPartitionKeyDB,
-    #[dynomite(sort_key)]
-    #[dynomite(rename = "qr_val")] //remote name
     pub id: DynamoSearchKey,
     pub title: Option<String>,
-    #[dynomite(rename = "location2")] //remote name
     pub location: Option<String>,
     pub items: Vec<QrItem>,
     pub image_hashes: Vec<QrImageHash>,
@@ -94,6 +86,7 @@ impl DbItem for QrCodeDB {
         DynamoDbType::QrCode
     }
 
+    /*/
     fn get_attribute_value_map(&self) -> HashMap<String, AttributeValue> {
         self.clone().into()
     }
@@ -112,4 +105,5 @@ impl DbItem for QrCodeDB {
 
         (attr_vals, update_expr)
     }
+    */
 }

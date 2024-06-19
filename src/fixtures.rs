@@ -1,6 +1,6 @@
 extern crate fxhash;
 
-use crate::dynamodb::qruuid::gen_uuid_str;
+use crate::model::qruuid::gen_uuid_str;
 use crate::model::qrcode::QrCode;
 use crate::model::qrgroup::QrGroup;
 use crate::model::qrimage::QrImage;
@@ -31,7 +31,7 @@ fn get_fixture_image2() -> Result<DynamicImage, ImageError> {
 }
 
 fn get_fixture_image_rgb() -> QrImage {
-    let rgb_image = get_fixture_image().ok().unwrap().to_rgb();
+    let rgb_image = get_fixture_image().ok().unwrap().to_rgb8();
     QrImage {
         image: rgb_image.clone(),
         hash32: fxhash::hash32(&rgb_image),
@@ -39,7 +39,7 @@ fn get_fixture_image_rgb() -> QrImage {
 }
 
 fn get_fixture_image_rgb2() -> QrImage {
-    let rgb_image = get_fixture_image2().ok().unwrap().to_rgb();
+    let rgb_image = get_fixture_image2().ok().unwrap().to_rgb8();
     QrImage {
         image: rgb_image.clone(),
         hash32: fxhash::hash32(&rgb_image),

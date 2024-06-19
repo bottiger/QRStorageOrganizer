@@ -18,14 +18,14 @@ path = "src/bin/cli.rs"
 #name = "rest"
 #path = "src/bin/rest.rs"
 
-[[bin]]
-name = "rocket"
-path = "src/bin/rocket.rs"
+#[[bin]]
+#name = "rocket"
+#path = "src/bin/rocket.rs"
 
 # AWS Lambda
-[[bin]]
-name = "bootstrap"
-path = "src/bin/lambda.rs"
+#[[bin]]
+#name = "bootstrap"
+#path = "src/bin/lambda.rs"
 
 # AWS Lambda - Serverless
 #[[bin]]
@@ -39,14 +39,14 @@ lazy_static = "1.4.0"
 dotenv = "0.15"
 rand  = "0.8"
 chrono = "0.4"
-clap = "4.5.7"
+clap = { version = "4.5.7", features = ["derive"]}
 config = "0.14"
 
 qrcode = "0.14"
 image = "0.25.1"
 #bardecoder = "0.2"
 fxhash = "0.2.1"
-printpdf = "0.7"
+printpdf = { version = "0.7", features = ["embedded_images"] }
 
 env_logger = "0.11.3"
 
@@ -56,9 +56,9 @@ env_logger = "0.11.3"
 simple-error = "0.2.2"
 
 #rusoto_dynamodb = "0.46"
-#rusoto_core = "0.46"
-#rusoto_s3 = "0.46"
-#rusoto_credential = "0.46"
+rusoto_core = "0.48"
+rusoto_s3 = "0.48"
+rusoto_credential = "0.48"
 
 futures = "0.3.30"
 tokio = "1.38"

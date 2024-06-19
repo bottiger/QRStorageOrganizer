@@ -1,20 +1,8 @@
-use crate::config::get_config;
-use rusoto_core::RusotoError;
-use rusoto_core::{HttpClient, Region};
+use rusoto_core::{HttpClient, Region, RusotoError};
 use rusoto_credential::StaticProvider;
-use rusoto_s3::DeleteObjectError;
-use rusoto_s3::DeleteObjectOutput;
-use rusoto_s3::DeleteObjectRequest;
-use rusoto_s3::GetObjectError;
-use rusoto_s3::GetObjectOutput;
-use rusoto_s3::GetObjectRequest;
-use rusoto_s3::ListObjectsV2Error;
-use rusoto_s3::ListObjectsV2Output;
-use rusoto_s3::ListObjectsV2Request;
-use rusoto_s3::PutObjectError;
-use rusoto_s3::PutObjectOutput;
-use rusoto_s3::StreamingBody;
-use rusoto_s3::{PutObjectRequest, S3Client, S3};
+use rusoto_s3::{DeleteObjectError, DeleteObjectOutput, DeleteObjectRequest, GetObjectError, GetObjectOutput, GetObjectRequest, ListObjectsV2Error, ListObjectsV2Output, ListObjectsV2Request, PutObjectError, PutObjectOutput, PutObjectRequest, S3Client, StreamingBody, S3}; // Import the Region type
+
+use crate::config::get_config;
 
 pub mod image_store;
 

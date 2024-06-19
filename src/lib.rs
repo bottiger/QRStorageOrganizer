@@ -3,7 +3,6 @@ extern crate dotenv;
 extern crate lazy_static;
 
 pub mod config;
-pub mod dynamodb;
 pub mod fixtures;
 pub mod im_encoder;
 pub mod model;

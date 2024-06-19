@@ -6,7 +6,7 @@ use image::DynamicImage;
 
 use crate::model::qrcode::QrCode;
 
-use crate::dynamodb::qruuid::gen_qr_scan_val;
+use crate::model::qruuid::gen_qr_scan_val;
 use image::ImageError;
 
 use image::Luma;

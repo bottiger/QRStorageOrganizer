@@ -1,3 +1,4 @@
+/*
 #[macro_use] extern crate rocket;
 
 #[get("/")]
@@ -24,3 +25,4 @@ fn removeqr(qrid: String) -> &'static str {  // <- request handler
 fn rocket() -> _ {
     rocket::build().mount("/", routes![index, getqr, updateqr, removeqr])
 }
+    */
