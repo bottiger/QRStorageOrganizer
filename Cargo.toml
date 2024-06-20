@@ -38,7 +38,7 @@ path = "src/bin/cli.rs"
 lazy_static = "1.4.0"
 dotenv = "0.15"
 rand  = "0.8"
-chrono = "0.4"
+chrono = {version ="^0.4", features = ["serde", "clock", "time"]}
 clap = { version = "4.5.7", features = ["derive"]}
 config = "0.14"
 
@@ -59,6 +59,8 @@ simple-error = "0.2.2"
 rusoto_core = "0.48"
 rusoto_s3 = "0.48"
 rusoto_credential = "0.48"
+
+firestore = "0.41"
 
 futures = "0.3.30"
 tokio = "1.38"
