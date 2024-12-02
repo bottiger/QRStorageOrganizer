@@ -12,7 +12,7 @@ lazy_static! {
     pub static ref TABLE_NAME: &'static str = "qrstorage";
     pub static ref PARTITION_KEY_NAME: &'static str = "qr_group_id";
     pub static ref SORT_KEY_NAME: &'static str = "qr_val";
-    pub static ref SORT_KEY_GROUP_VAL: &'static u64 = &0;
+    pub static ref SORT_KEY_GROUP_VAL: &'static i32 = &0;
 }
 
 
@@ -34,6 +34,18 @@ pub type QrVersion = u8;
 pub type DynamoPartitionKeyDB = u128DB;
 pub type DynamoPartitionKey = u128;
 pub type DynamoSearchKey = u64;
+
+pub type QrCodeId = u64; //qrcode value? 
+pub type QrGroupId = u192;
+pub type QrGroupSqlId = i32;
+
+#[derive(Serialize, Deserialize)]
+pub struct QrValue {
+    pub version: QrVersion,
+    pub group: QrGroupId,
+    pub code: QrCodeId,
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct DynamoPrimaryKey {
     pub partition_key: DynamoPartitionKey,
@@ -58,7 +70,7 @@ impl From<DecodeError> for KeyParseError {
 }
 
 
-pub fn slice_to_partition_key(s: &[u8]) -> Result<DynamoPartitionKey, TryFromSliceError> {
+pub fn slice_to_partition_key(s: &[u8]) -> Result<QrGroupId, TryFromSliceError> {
     match s.try_into() {
         Ok(v) => Ok(v),
         Err(_e) => Err(_e),

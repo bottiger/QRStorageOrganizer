@@ -49,6 +49,7 @@ pub async fn new_codes_pdf(group: &mut QrGroup, amount: usize, layout: QrPdfLayo
             location: None,
             images: Vec::new(),
             items: Vec::new(),
+			attachment: None,
 			content: None,
             version: VERSION,
         };

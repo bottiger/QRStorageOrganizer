@@ -9,6 +9,7 @@ pub mod model;
 pub mod pdf_generator;
 pub mod rest;
 pub mod storage;
+pub mod datastore;
 
 #[no_mangle]
 pub extern "C" fn rust_fn(x: i32) -> i32 {

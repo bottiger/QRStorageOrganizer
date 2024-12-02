@@ -6,8 +6,8 @@ mod tests {
     use qrstore::im_encoder::write_img;
     use std::fs;
     use std::path::PathBuf;
-    use qrstore::dynamodb::qruuid::gen_qr_scan_val;
-    use qrstore::dynamodb::qruuid::parse_qr_val;
+    use qrstore::model::qruuid::gen_qr_scan_val;
+    use qrstore::model::qruuid::parse_qr_val;
 
     fn test_model() {
 
@@ -32,10 +32,10 @@ mod tests {
 
         let parsed_primary_key = parsed_qr.ok().unwrap();
 
-        log::info!("parsed group id: {:?}", parsed_primary_key.partition_key.clone());
-        log::info!("parsed id: {:?}", parsed_primary_key.sort_key.clone());
+        log::info!("parsed group id: {:?}", parsed_primary_key.group.clone());
+        log::info!("parsed id: {:?}", parsed_primary_key.code.clone());
 
-        assert_eq!(parsed_primary_key.partition_key.clone(), qr.group_id);
-        assert_eq!(parsed_primary_key.sort_key.clone(), qr.id);
+        assert_eq!(parsed_primary_key.group.clone(), qr.group_id);
+        assert_eq!(parsed_primary_key.code.clone(), qr.id);
     }
 }

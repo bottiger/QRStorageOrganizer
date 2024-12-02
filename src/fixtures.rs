@@ -54,6 +54,7 @@ pub fn get_fixture_code() -> Result<QrCode, Box<dyn Error>> {
         qr_salt: *b"37AD14CBE27C4F3A544984B488513724", // "3kTMd".to_string(),
         qr_count: 4,
         qrcodes: vec![],
+        name: "Summer house".to_string(),
     };
 
     let qrcode_1 = QrCode {
@@ -63,6 +64,7 @@ pub fn get_fixture_code() -> Result<QrCode, Box<dyn Error>> {
         location: Some("Attic".to_string()),
         images: vec![],
         items: vec![],
+        attachment: None,
 		content: Some("This is a test string, again".to_string()),
         version: 1,
     };
@@ -78,6 +80,7 @@ pub fn get_fixture() -> Result<QrGroup, Box<dyn Error>> {
         qr_salt: *b"37AD14CBE27C4F3A544984B488513724", // "3kTMd".to_string(),
         qr_count: 4,
         qrcodes: vec![],
+        name: "Daddy's toys".to_string(),
     };
 
     let qr_item_1 = QrItem {
@@ -105,26 +108,29 @@ pub fn get_fixture() -> Result<QrGroup, Box<dyn Error>> {
         location: Some("Attic".to_string()),
         images: vec![],
         items: vec![qr_item_1, qr_item_2, qr_item_3],
+        attachment: None,
 		content: Some("This is a test string".to_string()),
         version: 1,
     };
     let qrcode_2 = QrCode {
         group_id: gid,
-        id: 2, //gen_qr_id(&qrgroup, 2)?,
+        id: 3, //gen_qr_id(&qrgroup, 2)?,
         title: Some("Bag of tricks".to_string()),
         location: Some("Attic".to_string()),
         images: vec![],
         items: vec![],
+        attachment: None,
 		content: Some("This is a test string, again".to_string()),
         version: 1,
     };
     let qrcode_3 = QrCode {
         group_id: gid,
-        id: 3, //gen_qr_id(&qrgroup, 3)?,
+        id: 2, //gen_qr_id(&qrgroup, 3)?,
         title: Some("Left drawer".to_string()),
         location: Some("Kitchen".to_string()),
         images: vec![get_fixture_image_rgb(), get_fixture_image_rgb2()],
         items: vec![qr_item_4],
+        attachment: None,
 		content: None,
         version: 1,
     };
@@ -135,6 +141,7 @@ pub fn get_fixture() -> Result<QrGroup, Box<dyn Error>> {
         location: None,
         images: vec![get_fixture_image_rgb2()],
         items: vec![qr_item_5],
+        attachment: None,
 		content: None,
         version: 1,
     };

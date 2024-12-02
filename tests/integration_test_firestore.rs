@@ -6,9 +6,9 @@ mod tests {
 
     use qrstore::config::init_env;
     use qrstore::datastore::datastore::DataStore;
+    use qrstore::datastore::firebase;
     use qrstore::fixtures::get_fixture;
     use qrstore::model::qrcode::QrCode;
-    use qrstore::datastore::sqlite::SQLiteDataStore;
 
 
     #[tokio::test]
@@ -19,10 +19,10 @@ mod tests {
         log::debug!("Starting test");
         println!("Starting test");
 
-        let db_name = "test.db";
+        let db_name = "qrst-287813";
         reset_database(db_name);
 
-        let mut datastore = SQLiteDataStore::new(db_name).await.unwrap();
+        let mut datastore = firebase::FirestoreDataStore::new(db_name).await.unwrap();
         let f = get_fixture().unwrap();
 
         assert_eq!(f.qrcodes.len(), 4);
@@ -62,28 +62,6 @@ mod tests {
         let deleted_group = datastore.get_group(&f.group_id).await.unwrap();
         assert!(deleted_group.is_none());
 
-        /*
-        assert!(datastore.create_group(&f).await.is_ok());
-        assert!(datastore.get_group(&f.group_id).await.is_ok());
-
-        assert!(datastore.create_group(&f).await.is_ok());
-
-        let qrg = datastore.get_group(&f.group_id).await.unwrap().unwrap();
-        let code_before = qrg.qrcodes.first().unwrap();
-
-        let mut code_after = code_before.clone();
-        let after_title = String::from("New title");
-        code_after.title = Some(after_title.clone());
-
-        let qr_code_db: QrCode = code_after.clone();
-        datastore.update_qrcode(&qr_code_db).await.unwrap();
-
-        let qrg_after = datastore.get_group(&f.group_id).await.unwrap().unwrap();
-        let code_after_get = qrg_after.qrcodes.first().unwrap();
-
-        assert_ne!(code_before.title, Some(after_title.clone()));
-        assert_eq!(Some(after_title), code_after_get.title);
-        */
     }
 
     fn reset_database(db_name: &str) {

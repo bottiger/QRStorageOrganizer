@@ -11,26 +11,32 @@ use crate::model::schema::DynamoSearchKey;
 use crate::model::schema::slice_to_partition_key;
 use std::collections::HashMap;
 
+use super::schema::{QrGroupId, QrGroupSqlId};
+
 #[derive(Default, Debug, Clone)]
 pub struct QrGroup {
-    pub group_id: DynamoPartitionKey,
-    pub id: DynamoSearchKey,
+    pub group_id: QrGroupId,
+    pub id: QrGroupSqlId,
+    pub name: String,
     pub qr_salt: u256,
     pub qr_count: u32,
     pub qrcodes: Vec<QrCode>,
 }
 
+/*
 impl From<QrGroupDB> for QrGroup {
     fn from(item: QrGroupDB) -> Self {
         QrGroup {
             group_id: slice_to_partition_key(&item.group_id).ok().unwrap(),
             id: item.id,
+            name: "From DynamoDB".to_string(),
             qr_salt: vec_to_u256(&item.qr_salt).ok().unwrap(),
             qr_count: item.qr_count,
             qrcodes: Vec::new(),
         }
     }
 }
+    */
 
 #[derive(Default, PartialEq, Debug, Clone)]
 pub struct QrGroupDB {
@@ -40,6 +46,7 @@ pub struct QrGroupDB {
     pub qr_count: u32,
 }
 
+/* 
 impl From<QrGroup> for QrGroupDB {
     fn from(item: QrGroup) -> Self {
         QrGroupDB {
@@ -50,7 +57,9 @@ impl From<QrGroup> for QrGroupDB {
         }
     }
 }
+    */
 
+    /* 
 impl DbItem for QrGroupDB {
     fn get_primary_key(&self) -> DynamoPrimaryKey {
         DynamoPrimaryKey {
@@ -68,6 +77,7 @@ impl DbItem for QrGroupDB {
     fn get_type(&self) -> DynamoDbType {
         DynamoDbType::QrGroup
     }
+    */
 
     /*
     fn get_attribute_value_map(&self) -> HashMap<String, AttributeValue> {
@@ -96,4 +106,3 @@ impl DbItem for QrGroupDB {
         (attr_vals, update_expr)
     }
     */
-}

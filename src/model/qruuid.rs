@@ -5,6 +5,7 @@ use crate::model::schema::DynamoPartitionKey;
 use crate::model::schema::u128;
 use crate::model::schema::u192;
 use crate::model::schema::slice_to_partition_key;
+use crate::model::schema::QrCodeId;
 use base_62::base62::Error;
 use harsh::BuildError;
 use harsh::Harsh;
@@ -25,6 +26,12 @@ use sha3::{Digest, Sha3_256};
 use std::convert::TryInto;
 use vartyint;
 
+use base64::engine::general_purpose::URL_SAFE_NO_PAD;
+use base64::Engine;
+
+use super::schema::QrGroupId;
+use super::schema::QrValue;
+
 
 // const VERSION: u8 = 1;
 
@@ -40,6 +47,43 @@ lazy_static! {
 /// The first 8 bits are version number
 /// The next 192 bits are the group ID
 /// The next 56 bits are for the QR code
+/// 
+
+pub fn lowest_32_bits(value: &QrGroupId) -> i32 {
+    let bytes = &value[20..24]; // Get the last 4 bytes
+    i32::from_le_bytes(bytes.try_into().expect("Slice should have exactly 4 bytes"))
+}
+
+pub fn encode_u256(data: u256) -> String {
+    URL_SAFE_NO_PAD.encode(data)
+}
+
+pub fn encode_binary(data: &[u8]) -> String {
+    URL_SAFE_NO_PAD.encode(data)
+}
+
+pub fn encode_binary_vec(data: Vec<u8>) -> String {
+    URL_SAFE_NO_PAD.encode(data)
+}
+
+pub fn decode_binary(encoded: &str) -> Result<[u8; 24], Box<dyn std::error::Error>> {
+    let bytes = URL_SAFE_NO_PAD.decode(encoded)?;
+    let array: [u8; 24] = bytes.try_into().map_err(|e: Vec<u8>| -> Box<dyn std::error::Error> {
+        format!("Failed to convert to array: {:?}", e).into()
+    })?;
+    Ok(array)
+}
+
+pub fn bytes_to_i32(data: &[u8; 24]) -> i32 {
+    i32::from_le_bytes(data[0..4].try_into().unwrap())
+}
+
+
+/*
+pub fn lowest_32_bits(value: QrGroupId) -> u32 {
+    (vec_to_u192(value) & 0xFFFF_FFFF) as u32
+}
+    */
 
 pub fn to_base64(bytes: &Bytes) -> String {
     encode(&bytes)
@@ -82,11 +126,11 @@ pub fn from_base64(str: String) -> Result<u256, base_62::base62::Error> {
     base_62::decode(&str).and_then(|v| vec_to_u256(&v))
 }
 
-pub fn gen_uuid_str(name: &str) -> DynamoPartitionKey {
+pub fn gen_uuid_str(name: &str) -> QrGroupId {
     gen_uuid(name.as_bytes())
 }
 
-pub fn gen_uuid(name: &[u8]) -> DynamoPartitionKey {
+pub fn gen_uuid(name: &[u8]) -> QrGroupId {
     let mut hasher = Sha3_256::new();
     hasher.update(name);
     let result = hasher.finalize();
@@ -94,10 +138,12 @@ pub fn gen_uuid(name: &[u8]) -> DynamoPartitionKey {
     let slice = result.as_slice();
     info!("Hash result {:?}", slice);
 
-    let u128_slice = &slice[..size_of::<DynamoPartitionKey>()];
-    let u128_val = slice_to_partition_key(u128_slice);
+    //let u128_slice = &slice[..size_of::<DynamoPartitionKey>()];
+    //let u128_val = slice_to_partition_key(u128_slice);
+    let u192_slice = &slice[..size_of::<QrGroupId>()];
+    let u192_val = slice_to_partition_key(u192_slice);
 
-    match u128_val {
+    match u192_val {
         Ok(v) => v,
         Err(_e) => panic!("this is a terrible mistake!"),
     }
@@ -171,10 +217,10 @@ pub fn parse_qr_val(val: String) -> Result<DynamoPrimaryKey, QrParsingError> {
     Ok(DynamoPrimaryKey { partition_key: p, sort_key: s })
 }
 */
-pub fn parse_qr_val(val: String) -> Result<DynamoPrimaryKey, QrParsingError> {
+pub fn parse_qr_val(val: String) -> Result<QrValue, QrParsingError> {
     let bytes: Vec<u8> = base_62::decode(&val).map_err(|_e| QrParsingError)?;
 
-    let expected_bytesize = size_of::<QrVersion>() + size_of::<DynamoPartitionKey>() + size_of::<DynamoSearchKey>();
+    let expected_bytesize = size_of::<QrVersion>() + size_of::<QrGroupId>() + size_of::<QrCodeId>();
     log::debug!("Byte length: {:?}. Expect: {}", bytes.len(), expected_bytesize);
 
     /*
@@ -208,26 +254,26 @@ pub fn parse_qr_val(val: String) -> Result<DynamoPrimaryKey, QrParsingError> {
 }
 
 
-pub fn parse_qr_val_v1(bytes: Vec<u8>) -> Result<DynamoPrimaryKey, QrParsingError> {
+pub fn parse_qr_val_v1(bytes: Vec<u8>) -> Result<QrValue, QrParsingError> {
 
-    let expected_bytesize = size_of::<DynamoPartitionKey>() + size_of::<DynamoSearchKey>();
+    let expected_bytesize = size_of::<QrGroupId>() + size_of::<DynamoSearchKey>();
     log::debug!("Byte length: {:?}. Expect: {}", bytes.len(), expected_bytesize);
 
-    let mut p: [u8; size_of::<DynamoPartitionKey>()] = Default::default();
-    let part_key_bytes = bytes.get(0..size_of::<DynamoPartitionKey>()).ok_or(QrParsingError)?;
-    let sl: [u8; size_of::<DynamoPartitionKey>()] = part_key_bytes.try_into().map_err(|_e| QrParsingError)?;
+    let mut p: [u8; size_of::<QrGroupId>()] = Default::default();
+    let part_key_bytes = bytes.get(0..size_of::<QrGroupId>()).ok_or(QrParsingError)?;
+    let sl: [u8; size_of::<QrGroupId>()] = part_key_bytes.try_into().map_err(|_e| QrParsingError)?;
     p.copy_from_slice(&sl);
 
 
     
-    let first_byte = size_of::<DynamoPartitionKey>();
+    let first_byte = size_of::<QrGroupId>();
     let num_bytes = bytes.len();
     let _qrid_length = num_bytes - first_byte;
 
     let qrid_bytes = bytes.get(first_byte..num_bytes).ok_or(QrParsingError)?;
     let (s, _qrid_bytes) = vartyint::read_u64(&qrid_bytes).unwrap();
 
-    Ok(DynamoPrimaryKey { partition_key: p, sort_key: s })
+    Ok(QrValue { version: 1, group: p, code: s })
 }
 
 pub fn gen_qr_scan_val_short(_group: &QrGroup, val: DynamoSearchKey) -> String {
