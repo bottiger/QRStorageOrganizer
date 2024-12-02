@@ -2,7 +2,7 @@
 name = "qrstore"
 version = "0.1.0"
 authors = ["Arvid Böttiger <bottiger@gmail.com>"]
-edition = "2024"
+edition = "2021"
 autobins = false
 
 #[lib]
@@ -35,15 +35,15 @@ path = "src/bin/cli.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-lazy_static = "1.4.0"
+lazy_static = "1.5.0"
 dotenv = "0.15"
 rand  = "0.8"
 chrono = {version ="^0.4", features = ["serde", "clock"]}
-clap = { version = "4.5.7", features = ["derive"]}
-config = "0.14"
+clap = { version = "4.5.21", features = ["derive"]}
+config = "0.14.1"
 
-qrcode = "0.14"
-image = "0.25.1"
+qrcode = "0.14.1"
+image = "0.25.5"
 #bardecoder = "0.2"
 fxhash = "0.2.1"
 printpdf = { version = "0.7", features = ["embedded_images"] }
@@ -53,24 +53,24 @@ diesel = { version = "2.2.5", features = ["sqlite"] }
 async-trait = "0.1.83"
 
 
-env_logger = "0.11.3"
+env_logger = "0.11.5"
 
 #lambda-web = { version = "0.1.6", features=["rocket05"] }
 #rocket = "0.5.0-rc.1"
 
-simple-error = "0.2.2"
+simple-error = "0.3.1"
 
 #rusoto_dynamodb = "0.46"
 rusoto_core = "0.48"
 rusoto_s3 = "0.48"
 rusoto_credential = "0.48"
 
-firestore = "0.42"
+firestore = "0.44.0"
 
-futures = "0.3.30"
-tokio = "1.38"
-log = "0.4.21"
-uuid = { version = "1.8", features = ["serde", "v5"] }
+futures = "0.3.31"
+tokio = "1.41"
+log = "0.4.22"
+uuid = { version = "1.11.0", features = ["serde", "v5"] }
 
 base64 = "0.22.1"
 base-62 = "0.1.1"
@@ -79,14 +79,14 @@ harsh = "0.2.2"
 vartyint = "0.3"
 
 sha3 = "0.10.8"
-bytes = "1.6"
+bytes = "1.9"
 
-serde = "1.0.203"
-serde_json = "1.0.117"
-serde_derive = "1.0.203"
+serde = "1.0.215"
+serde_json = "1.0.133"
+serde_derive = "1.0.215"
 simple_logger = "5.0.0"
 
-openssl = { version = "0.10.64", features = ["vendored"] }
+openssl = { version = "0.10.68", features = ["vendored"] }
 
-firebase-rs = "2.1.2"
+firebase-rs = "2.2.0"
 rusqlite = "0.32.1"
