@@ -14,9 +14,9 @@ autobins = false
 name = "cli"
 path = "src/bin/cli.rs"
 
-#[[bin]]
-#name = "rest"
-#path = "src/bin/rest.rs"
+[[bin]]
+name = "www"
+path = "src/bin/rest.rs"
 
 #[[bin]]
 #name = "rocket"
@@ -55,9 +55,6 @@ async-trait = "0.1.83"
 
 env_logger = "0.11.5"
 
-#lambda-web = { version = "0.1.6", features=["rocket05"] }
-#rocket = "0.5.0-rc.1"
-
 simple-error = "0.3.1"
 
 #rusoto_dynamodb = "0.46"
@@ -65,10 +62,6 @@ rusoto_core = "0.48"
 rusoto_s3 = "0.48"
 rusoto_credential = "0.48"
 
-firestore = "0.44.0"
-
-futures = "0.3.31"
-tokio = "1.41"
 log = "0.4.22"
 uuid = { version = "1.11.0", features = ["serde", "v5"] }
 
@@ -90,3 +83,10 @@ openssl = { version = "0.10.68", features = ["vendored"] }
 
 firebase-rs = "2.2.0"
 rusqlite = "0.32.1"
+
+actix-web = "4.9.0"
+pnet = "0.35.0"
+
+firestore = "0.44.0"
+futures = "0.3.31"
+tokio = "1.42"
