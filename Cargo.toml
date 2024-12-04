@@ -15,7 +15,7 @@ name = "cli"
 path = "src/bin/cli.rs"
 
 [[bin]]
-name = "www"
+name = "rest"
 path = "src/bin/rest.rs"
 
 #[[bin]]

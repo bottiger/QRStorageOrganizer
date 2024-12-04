@@ -1,17 +1,34 @@
-FROM ekidd/rust-musl-builder as builder
+FROM rust:1.83.0-bookworm AS builder
 
 # Add ARM target
-RUN rustup target add aarch64-unknown-linux-musl
+#RUN rustup target add aarch64-unknown-linux-musl
 
 WORKDIR /home/rust/src
 COPY --chown=rust ./Cargo* ./
 COPY --chown=rust ./src ./src/
 
-# Build for ARM
-RUN cargo build --bin rest --release --target=aarch64-unknown-linux-musl
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libssl-dev \
+    libsqlite3-dev \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
-FROM alpine:latest AS app
-# Copy in statically linked ARM binary
-COPY --from=builder /home/rust/src/target/aarch64-unknown-linux-musl/release/rest /
-EXPOSE 8088
-ENTRYPOINT ["/rest"]
+# Build for ARM
+RUN cargo build --bin rest --release
+
+# Stage 2: Create a minimal runtime image
+FROM debian:bookworm-slim
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y \
+    libssl-dev \
+    libsqlite3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy the compiled binary from the builder stage
+COPY --from=builder /home/rust/src/target/release/rest /usr/local/bin/rest
+
+# Set the default cmc
+EXPOSE 8080
+ENTRYPOINT ["/usr/local/bin/rest"]

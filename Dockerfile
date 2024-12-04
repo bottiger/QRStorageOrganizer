@@ -1,16 +1,20 @@
-FROM ekidd/rust-musl-builder as builder
+# Use a Rust base image with Cargo installed
+FROM rust:1.83.0 AS builder
 
-WORKDIR /home/rust/src
-COPY --chown=rust ./Cargo* ./
-COPY --chown=rust ./src ./src/
+# Set the working directory inside the container
+WORKDIR /usr/src/app
 
+# Copy the Cargo.toml and Cargo.lock files
+COPY Cargo.toml Cargo.lock ./
+
+# Create an empty src directory to trick Cargo into thinking it's a valid Rust project
+RUN mkdir src
+
+# Now copy the source code
+COPY ./src ./src
+
+# Build your application
 RUN cargo build --bin rest --release
 
-FROM alpine:latest AS app
-# Set working directory
-# Copy in statically linked binary from builder stage
-COPY --from=builder /home/rust/src/target/x86_64-unknown-linux-musl/release/rest /
-# Expose port for server
-EXPOSE 8088
-# Run entrypoint script
-ENTRYPOINT ["/rest"]
+EXPOSE 8080
+CMD ["./target/release/rest"]
