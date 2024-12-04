@@ -4,8 +4,6 @@ FROM rust:1.83.0-bookworm AS builder
 #RUN rustup target add aarch64-unknown-linux-musl
 
 WORKDIR /home/rust/src
-COPY --chown=rust ./Cargo* ./
-COPY --chown=rust ./src ./src/
 
 RUN apt-get update && apt-get install -y \
     pkg-config \
@@ -13,6 +11,13 @@ RUN apt-get update && apt-get install -y \
     libsqlite3-dev \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
+
+
+COPY --chown=rust ./Cargo* ./
+
+RUN cargo fetch
+
+COPY --chown=rust ./src ./src/
 
 # Build for ARM
 RUN cargo build --bin rest --release
@@ -24,6 +29,7 @@ FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y \
     libssl-dev \
     libsqlite3-dev \
+    curl \ 
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the compiled binary from the builder stage
