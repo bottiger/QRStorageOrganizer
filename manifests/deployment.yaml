@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: qrst
-        image: qrst:latest
+        image: local-registry.default.svc:5000/qrst:latest #qrst:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
@@ -28,6 +28,6 @@ spec:
     app: qrst
   ports:
     - protocol: TCP
-      port: 80
+      port: 8080
       targetPort: 8080
   type: NodePort
