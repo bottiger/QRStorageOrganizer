@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qrst
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qrst
+  template:
+    metadata:
+      labels:
+        app: qrst
+    spec:
+      containers:
+      - name: qrst
+        image: local-registry.default.svc:5000/qrst:latest #qrst:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qrst
+spec:
+  selector:
+    app: qrst
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: NodePort
