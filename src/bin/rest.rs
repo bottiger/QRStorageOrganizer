@@ -8,6 +8,7 @@ use qrstore::model::qruuid::parse_qr_val;
 use serde_json::json;
 use actix_web::{web, App, HttpServer};
 use std::net::IpAddr;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -38,7 +39,10 @@ pub async fn index2(info: web::Path<String>, _req: HttpRequest) -> impl Responde
 }
 
 async fn ping() -> impl Responder {
-    HttpResponse::Ok().body("pong")
+    let timestamp = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
+    let response_body = format!("pong\nTimestamp: {}", timestamp);
+
+    HttpResponse::Ok().body(response_body)
 }
 
 async fn ip() -> impl Responder {
