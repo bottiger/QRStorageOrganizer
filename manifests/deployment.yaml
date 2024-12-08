@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
       - name: qrst
-        image: local-registry.default.svc:5000/qrst:latest #qrst:latest
-        imagePullPolicy: IfNotPresent
+        image: qrst:latest
+        #imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
 ---
