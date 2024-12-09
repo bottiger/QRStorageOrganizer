@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: qrst
-        image: image: localhost:30500/qrst:latest
+        image: localhost:30500/qrst:latest
         ports:
         - containerPort: 8080
 ---
