@@ -15,7 +15,6 @@ spec:
       containers:
       - name: qrst
         image: image: localhost:30500/qrst:latest
-        #imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
 ---
