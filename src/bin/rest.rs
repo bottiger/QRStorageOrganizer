@@ -17,6 +17,7 @@ async fn main() -> std::io::Result<()> {
             .route("/ping", web::get().to(ping))
             .route("/ip", web::get().to(ip))
 			.route("/qr", web::get().to(index2))
+            .route("/", web::get().to(index))
     })
     .bind("0.0.0.0:8080")?
     .run()
